@@ -139,9 +139,6 @@ export default function Unauthorized() {
         <div className="min-h-screen w-full mx-auto px-4 relative h-[100vh] flex-col items-center justify-center bg-background-gradient">
 
             <div className="lg:p-8 @container flex flex-col justify-center items-center">
-                <h1 className="absolute left-4 top-4 @lg:left-8 @lg:top-8 whitespace-nowrap font-bold text-xl leading-5">
-                    {process.env.NEXT_PUBLIC_WEBSITE_NAME}
-                </h1>
                 <Card variant="glass" className="m-auto flex flex-col justify-center space-y-6 max-w-[28rem]  mx-auto w-full h-full  mt-32 @lg:mt-0">
                     <CardHeader className="flex flex-col space-y-2 text-center">
                         <CardTitle>
