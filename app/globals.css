@@ -58,6 +58,9 @@
 
 *:autofill {
   font: inherit;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
 }
 html {
   scroll-behavior: smooth;
@@ -94,6 +97,7 @@ html::-webkit-scrollbar-thumb:hover {
     overflow-x: hidden;
     position: relative;
     @apply bg-background text-foreground;
+    font-family: var(--font-sans, 'Inter', 'Helvetica', 'Arial', sans-serif);
 
 }
 

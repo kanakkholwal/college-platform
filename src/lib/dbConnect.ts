@@ -37,7 +37,7 @@ async function dbConnect(dbName :string = defaultDb): Promise<Mongoose> {
 
         try {
             mongoose.set('strictQuery', false);
-            cached.promise = mongoose.connect(MONGODB_URI, opts)
+            cached.promise = mongoose.connect(`${MONGODB_URI} + "?retryWrites=true&w=majority&appName=nith"`, opts)
                 .then((mongoose) => {
                     console.log("Connected to MongoDB to database:", dbName);
                     return mongoose;
