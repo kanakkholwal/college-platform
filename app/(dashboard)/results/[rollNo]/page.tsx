@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart } from '@tremor/react';
 import { Mail, Undo2 } from 'lucide-react';
@@ -6,7 +7,6 @@ import { notFound } from "next/navigation";
 import dbConnect from "src/lib/dbConnect";
 import ResultModel, { Semester } from "src/models/result";
 import { CgpiCard, RankCard, SemCard } from "./components/card";
-
 export default async function ResultsPage({ params }: { params: { rollNo: string } }) {
     await dbConnect();
     const result = await ResultModel.findOne({
@@ -28,13 +28,13 @@ export default async function ResultsPage({ params }: { params: { rollNo: string
     })
 
     return (<>
-        <section id="hero" className="z-10 w-full max-w-6xl relative flex flex-col items-center justify-center  py-24 max-h-80 text-center">
-            <Link href="/results" className="relative flex h-12 w-full items-center justify-center py-4 mr-auto px-6 before:absolute before:inset-0 before:rounded-full before:border before:border-transparent before:bg-primary/10 before:bg-gradient-to-b before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 dark:before:border-gray-700 dark:before:bg-gray-800 sm:w-max">
-                <span className="relative text-base font-semibold text-primary dark:text-white flex items-center gap-2">
+        <section id="hero" className="z-10 w-full max-w-6xl relative flex flex-col items-center justify-center  py-24 text-center">
+            <Button rounded="full" variant="default_light" className="mr-auto ml-2" asChild>
+                <Link href="/results" >
                     <Undo2 className="w-5 h-5" />
                     Go Back
-                </span>
-            </Link>
+                </Link>
+            </Button>
             <div className="lg:w-3/4 text-center mx-auto mt-10">
                 <h1 className="text-gray-900 dark:text-white font-bold text-5xl md:text-6xl xl:text-7xl">
                     <span className="relative bg-gradient-to-r from-primary to-sky-500 bg-clip-text text-transparent  md:px-2">
@@ -65,10 +65,10 @@ export default async function ResultsPage({ params }: { params: { rollNo: string
 
             </div>
         </section>
-        <div className="max-w-6xl mx-auto px-6 md:px-12 xl:px-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            <RankCard result={result} />
-            <CgpiCard result={result} />
-        </div>
+            <div className="max-w-6xl mx-auto px-6 md:px-12 xl:px-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
+                <RankCard result={result} />
+                <CgpiCard result={result} />
+            </div>
         <div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mx-auto mt-24 mb-10">
                 Semester Wise Results
@@ -77,14 +77,13 @@ export default async function ResultsPage({ params }: { params: { rollNo: string
 
             <Tabs defaultValue="table">
                 <div className="flex items-center w-full mb-5">
-
                     <TabsList className="mx-auto">
                         <TabsTrigger value="table">Tabular View</TabsTrigger>
                         <TabsTrigger value="graph">Graphical View</TabsTrigger>
                     </TabsList>
                 </div>
                 <TabsContent value="table">
-                    <div className="max-w-7xl w-full xl:px-6 grid gap-4 grid-cols-1 @md:grid-cols-2 @xl:grid-cols-3">
+                    <div className="max-w-7xl w-full xl:px-6 grid gap-4 grid-cols-1 @lg:grid-cols-2 @4xl:grid-cols-3">
                         {result.semesters?.map((semester: Semester, index: number) => {
                             return <SemCard key={index} semester={semester} />
                         })}

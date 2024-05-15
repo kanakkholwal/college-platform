@@ -19,15 +19,15 @@ export function CgpiCard({ result }: {
     const minCgpi = result.semesters?.reduce((prev, curr) => Math.min(prev, curr.cgpi), 10);
     const cgpi = result.semesters?.at(-1)?.cgpi ?? 0;
     return <Card  variant="glass"  className="hover:shadow-lg animate-in popup ">
-        <CardHeader className="flex-row items-center gap-2">
-            <div className="flex justify-center items-center w-16 h-16 rounded-full bg-slate-100 dark:bg-gray-800 font-bold text-xl">
+        <CardHeader className="flex-row items-center gap-2  px-3 py-4">
+            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-white/50 font-bold text-xl">
                 <TrendingUp />
             </div>
             <div>
-                <CardTitle>
+                <CardTitle className="text-xl">
                     CGPI
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="font-semibold text-gray-700">
                     Trend Analysis
                 </CardDescription>
             </div>
@@ -54,15 +54,15 @@ export function RankCard({ result }: {
 }) {
 
     return <Card variant="glass" className="hover:shadow-lg animate-in popup ">
-        <CardHeader className="flex-row items-center gap-2">
-            <div className="flex justify-center items-center w-16 h-16 rounded-full bg-slate-100 dark:bg-gray-800 font-bold text-xl">
+        <CardHeader className="flex-row items-center gap-2  px-3 py-4">
+            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-white/50 font-bold text-xl">
                 <ArrowDownUp />
             </div>
             <div>
-                <CardTitle>
+                <CardTitle className="text-xl">
                     Ranking
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="font-semibold text-gray-700">
                     Ranking Analysis
                 </CardDescription>
             </div>

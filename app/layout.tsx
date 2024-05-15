@@ -1,11 +1,8 @@
 import { cn } from "@/lib/utils";
-import Unauthorized from "@/screens/unauthorized";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 
-import { getSession } from "src/lib/auth";
-import { sessionType } from "src/types/session";
-import { Provider, ThemeProvider } from "./client-provider";
+import { Provider } from "./client-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,8 +21,6 @@ type RootLayoutProps = Readonly<{
 }>
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-  const session = await getSession() as sessionType | null
-  const authorized = !!session?.user;
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -36,17 +31,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           fontSans.variable
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          themes={['light', 'dark']}
-        >
-          <main className="flex min-h-screen flex-col items-center justify-between p-6 md:p-12 lg:p-24 @container space-y-4">
-            {authorized ? <Provider>{children} </Provider> : <Unauthorized />}
-          </main>
-
-        </ThemeProvider>
+        <Provider>{children} </Provider>
       </body>
     </html>
   )

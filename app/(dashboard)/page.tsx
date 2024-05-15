@@ -20,9 +20,9 @@ const quick_links = [
     description: "Check the availability of classrooms here."
   },
   {
-    href: "https://vercel.com/",
-    title: "Deploy",
-    description: "Instantly deploy your Next.js site to a shareable URL with Vercel."
+    href: "/schedules",
+    title: "Schedules",
+    description: "Check your schedules here."
   }
 ]
 
@@ -31,7 +31,6 @@ export default async function Dashboard() {
 
   return (
     <>
-
       <section id="hero" className="z-10 w-full max-w-6xl relative flex flex-col items-center justify-center  py-24 max-h-80 text-center">
         <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-100 whitespace-nowrap" data-aos="fade-up">
           Welcome back, <span className="text-primary">{session.user.firstName}</span>
@@ -44,7 +43,7 @@ export default async function Dashboard() {
           Quick Links
         </h2>
 
-        <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left gap-4">
+        <div className="mb-32 grid  lg:mb-0 lg:w-full mx-auto @5xl:max-w-6xl grid-cols-1 @md:grid-cols-2 @4xl:grid-cols-4 text-left gap-4">
           {quick_links.map((link, index) => <RouterCard key={index} {...link} />)}
         </div>
       </section>
@@ -67,7 +66,7 @@ function RouterCard({ href, title, description, external = false }: RouterCardPr
     target={external ? "_blank" : "_self"}
     rel={external ? "noopener noreferrer" : undefined}
   >
-    <h2 className="mb-3 text-xl font-semibold">
+    <h2 className="mb-3 text-xl font-semibold whitespace-nowrap">
       {title}{" "}
       <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
         {external ? <ArrowUpRight className="w-4 h-4 ml-1" /> : <ArrowRight className="w-4 h-4 ml-1" />}

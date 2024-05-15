@@ -78,6 +78,7 @@ export default function Unauthorized() {
             loading: 'Logging in...',
             success: (data:any) => {
                 console.log(data);
+                router.refresh();
                 setIsLoading(false);
                 if (redirect) {
                     router.push(redirect);
@@ -87,7 +88,7 @@ export default function Unauthorized() {
                     router.push(callbackUrl);
                     return `Logged in successfully to ${callbackUrl}`
                 }
-                router.push("/feed");
+                router.push("/");
                 return `Logged in successfully to dashboard`
             },
             error: (err) => {

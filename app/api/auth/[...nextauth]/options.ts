@@ -1,10 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { revalidatePath } from "next/cache";
 import dbConnect from "src/lib/dbConnect";
 import ResultModel from "src/models/result";
 import UserModel from "src/models/user";
-
 import { sessionUserType } from "src/types/session";
 
 interface AuthEnv {
@@ -94,7 +94,7 @@ export const authOptions: NextAuthOptions = {
 
 
                         console.log("user found", user)
-
+                        revalidatePath("/","layout")
                         return resolve(user)
 
                     }
