@@ -45,6 +45,7 @@
     "next-auth": "^4.24.7",
     "next-themes": "^0.3.0",
     "next13-progressbar": "^1.2.1",
+    "node-html-parser": "^6.1.13",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.4",
