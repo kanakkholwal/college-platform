@@ -9,7 +9,7 @@ import { Next13ProgressBar } from 'next13-progressbar';
 import { useEffect } from "react";
 import { Toaster as HotToaster } from "react-hot-toast";
 
-
+import { Gradient } from "whatamesh";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     return <NextThemesProvider {...props}>{children}</NextThemesProvider>
@@ -24,8 +24,11 @@ export function Provider({ children }: { children: React.ReactNode }) {
             once: true,
             easing: 'ease-in-out',
         });
+        const gradient = new Gradient();
+        gradient.initGradient("#gradient-canvas");
     }, [])
     return <SessionProvider>
+        <canvas id="gradient-canvas" data-transition-in className="fixed inset-0 -z-1" />
         {children}
         <Next13ProgressBar height="4px" color="hsl(var(--primary))" options={{ showSpinner: true, trickle: true }} showOnShallow={true} />
         <HotToaster
