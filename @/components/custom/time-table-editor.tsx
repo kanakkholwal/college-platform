@@ -39,40 +39,29 @@ import {
 } from "@/components/ui/select";
 import { DEPARTMENTS_LIST } from "src/constants/departments";
 import { useMediaQuery } from 'usehooks-ts';
+import { useRef } from "react";
 
-export type TimeTableState = {
-    timetableData: FormattedTimetable
-    isEditing: boolean;
-    editingEvent: {
-        dayIndex: number;
-        timeSlotIndex: number;
-        eventIndex: number;
-    };
-};
+import { TimeTableState, useTimetableStore } from "./time-table-store";
 
-
-export const useTimetableStore = create<TimeTableState>((set) => ({
-    timetableData: {
-        department_code: "",
-        sectionName: "",
-        year: 1,
-        semester: 1,
-        schedule: Array.from(daysMap.entries()).map((_, dayIndex) => ({
-            day: dayIndex,
-            timeSlots: Array.from(timeMap.entries()).map((_, timeSlotIndex) => ({
-                startTime: timeSlotIndex,
-                endTime: timeSlotIndex + 1,
-                events: [] as FormattedTimetable['schedule'][0]['timeSlots'][0]['events']
-            }))
-        }))
-    },
-    isEditing: false,
-    editingEvent: {
-        dayIndex: 0,
-        timeSlotIndex: 0,
-        eventIndex: 0
-    },
-}))
+export function StoreInitializer({ timetableData, isEditing }: {
+    timetableData: TimeTableState["timetableData"],
+    isEditing: TimeTableState["isEditing"]
+}) {
+    const initialized = useRef(false);
+    if (!initialized.current) {
+        useTimetableStore.setState({
+            timetableData: timetableData,
+            isEditing: false,
+            editingEvent: {
+                dayIndex: 0,
+                timeSlotIndex: 0,
+                eventIndex: 0
+            }
+        });
+        initialized.current = true;
+    }
+    return null;
+}
 
 
 
@@ -123,6 +112,28 @@ const EditTimetableDialog: React.FC = () => {
     const handleCancel = () => {
         useTimetableStore.setState({ isEditing: false, editingEvent: { dayIndex: 0, timeSlotIndex: 0, eventIndex: -1 } });
     };
+    const handleDelete = () => {
+        const updatedTimetableData = {
+            ...timetableData,
+            schedule: timetableData.schedule.map((daySchedule, dayIndex) => {
+                if (dayIndex === editingEvent.dayIndex) {
+                    return {
+                        ...daySchedule,
+                        timeSlots: daySchedule.timeSlots.map((timeSlot, timeSlotIndex) => {
+                            if (timeSlotIndex === editingEvent.timeSlotIndex) {
+                                const updatedEvents = timeSlot.events.filter((_, index) => index !== editingEvent.eventIndex);
+                                return { ...timeSlot, events: updatedEvents };
+                            }
+                            return timeSlot;
+                        }),
+                    };
+                }
+                return daySchedule;
+            }),
+        };
+        useTimetableStore.setState({ timetableData: updatedTimetableData, isEditing: false, editingEvent: { dayIndex: 0, timeSlotIndex: 0, eventIndex: -1 } });
+        setNewEvent({ title: '', description: '' });
+    }
 
     const handleEventChange = (field: keyof typeof newEvent, value: any) => {
         setNewEvent((prevEvent) => ({ ...prevEvent, [field]: value }));
@@ -179,6 +190,9 @@ const EditTimetableDialog: React.FC = () => {
                         <Button onClick={handleSave}>Save</Button>
                         <Button variant="outline" onClick={handleCancel}>
                             Cancel
+                        </Button>
+                        <Button  onClick={handleDelete}>
+                            Delete
                         </Button>
                     </div>
                 </div>

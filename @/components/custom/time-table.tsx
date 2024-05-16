@@ -11,47 +11,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { getDepartmentName } from "src/constants/departments";
+import { RawTimetable, TimeTableWithID } from "src/models/time-table";
 import { daysMap, timeMap } from "./time-table-constants";
-import EditTimetableDialog, { TimeTableMetaData, TimeTableState, useTimetableStore } from "./time-table-editor";
+import EditTimetableDialog, { TimeTableMetaData } from "./time-table-editor";
+import { useTimetableStore } from "./time-table-store";
 
-interface FormattedTimetable {
-    department_code: string;
-    sectionName: string;
-    year: number;
-    semester: number;
-    schedule: {
-        day: number;
-        timeSlots: {
-            startTime: number;
-            endTime: number;
-            events: {
-                title: string;
-                description: string;
-            }[];
-        }[];
-    }[];
-}
+export type FormattedTimetable = TimeTableWithID | RawTimetable;
 
-
-
-interface TimetableProps {
+export type TimetableProps = {
     timetableData: FormattedTimetable;
     mode?: "view" | "edit";
-    saveTimetable?: (timetableData: FormattedTimetable) => Promise<void>;
+    saveTimetable?: (timetableData: FormattedTimetable) => Promise<string>;
 }
 
-export type { FormattedTimetable, TimetableProps };
 
 
+export function TimeTable({ timetableData, mode = "view", saveTimetable }: TimetableProps) {
 
-export function TimeTable({ timetableData, mode = "view",saveTimetable }: TimetableProps) {
-    const { timetableData: stateTimetableData,isEditing } = useTimetableStore((state) => ({ timetableData: state.timetableData, isEditing: state.isEditing}));
-    if (mode === "edit" && !stateTimetableData) {
-        useTimetableStore.setState({ timetableData } as { timetableData: TimeTableState["timetableData"], isEditing: true});
-    }
+    const { timetableData: stateTimetableData, isEditing } = useTimetableStore((state) => ({ timetableData: state.timetableData, isEditing: state.isEditing }));
+
     const handleSaveTimetable = async () => {
         if (mode === "edit" && stateTimetableData) {
-            if(saveTimetable && typeof saveTimetable === "function"){
+            if (saveTimetable && typeof saveTimetable === "function") {
                 useTimetableStore.setState({ isEditing: false });
                 toast.promise(saveTimetable(stateTimetableData), {
                     loading: "Saving Timetable",
@@ -66,7 +47,7 @@ export function TimeTable({ timetableData, mode = "view",saveTimetable }: Timeta
 
     return (<>
 
-        <div className="flex items-center justify-between gap-2 flex-col md:flex-row mx-auto max-w-7xl w-full">
+        <div className="flex items-center justify-between gap-2 flex-col md:flex-row mx-auto max-w-7xl w-full mt-20">
             <div>
                 <h3 className="text-lg font-semibold">{stateTimetableData.sectionName} - {getDepartmentName(stateTimetableData.department_code)}</h3>
                 <p className="text-sm text-gray-700">{stateTimetableData.year} Year, {stateTimetableData.semester} Semester</p>
@@ -109,7 +90,7 @@ export function TimeTable({ timetableData, mode = "view",saveTimetable }: Timeta
                                     "border-x text-center ",
                                     new Date().getDay() === dayIndex ? "text-primary bg-primary/10" : ""
                                 )}
-                                {...(mode === "edit" &&  {
+                                {...(mode === "edit" && {
                                     role: "button",
                                     tabIndex: 0,
                                     "aria-disabled": isEditing ? "true" : "false",
@@ -149,57 +130,3 @@ function Event({ event }: { event: FormattedTimetable["schedule"][0]["timeSlots"
         </div>
     );
 }
-export const sampleTimetableData: FormattedTimetable = {
-    department_code: "Computer Science",
-    sectionName: "A",
-    year: 3,
-    semester: 1,
-    schedule: [
-        {
-            day: 0, // Monday
-            timeSlots: [
-                {
-                    startTime: 0, // 8:00 AM - 9:00 AM
-                    endTime: 1, // 9:00 AM - 10:00 AM
-                    events: [
-                        {
-                            title: "Data Structures",
-                            description: "Lecture"
-                        },
-                        {
-                            title: "Operating Systems",
-                            description: "Lecture"
-                        },
-                    ],
-                },
-                {
-                    startTime: 1, // 9:00 AM - 10:00 AM
-                    endTime: 2, // 10:00 AM - 11:00 AM
-                    events: [
-                        {
-                            title: "Computer Networks",
-                            description: "Tutorial"
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            day: 1, // Tuesday
-            timeSlots: [
-                {
-                    startTime: 2, // 10:00 AM - 11:00 AM
-                    endTime: 3, // 11:00 AM - 12:00 PM
-                    events: [
-                        {
-                            title: "Algorithms",
-                            description: "Lecture",
-                        },
-                    ],
-                },
-                // More time slots...
-            ],
-        },
-        // More days...
-    ],
-};
