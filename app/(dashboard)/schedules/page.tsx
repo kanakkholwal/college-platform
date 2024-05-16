@@ -7,7 +7,7 @@ import { sessionType } from "src/types/session";
 
 
 const sampleTimetableData: FormattedTimetable = {
-    department: "Computer Science",
+    department_code: "Computer Science",
     sectionName: "A",
     year: 3,
     semester: 1,
@@ -22,14 +22,12 @@ const sampleTimetableData: FormattedTimetable = {
                         {
                             title: "Data Structures",
                             description: "Lecture",
-                            startDateTime: new Date("2023-05-22T08:00:00"),
-                            endDateTime: new Date("2023-05-22T09:00:00"),
+
                         },
                         {
                             title: "Operating Systems",
                             description: "Lecture",
-                            startDateTime: new Date("2023-05-22T09:00:00"),
-                            endDateTime: new Date("2023-05-22T10:00:00"),
+                        
                         },
                     ],
                 },
@@ -40,8 +38,7 @@ const sampleTimetableData: FormattedTimetable = {
                         {
                             title: "Computer Networks",
                             description: "Tutorial",
-                            startDateTime: new Date("2023-05-22T09:00:00"),
-                            endDateTime: new Date("2023-05-22T10:00:00"),
+
                         },
                     ],
                 },
@@ -58,8 +55,6 @@ const sampleTimetableData: FormattedTimetable = {
                         {
                             title: "Algorithms",
                             description: "Lecture",
-                            startDateTime: new Date("2023-05-23T10:00:00"),
-                            endDateTime: new Date("2023-05-23T11:00:00"),
                         },
                     ],
                 },

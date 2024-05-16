@@ -39,8 +39,8 @@ interface ITimetable extends Document {
   year: number;
   semester: number;
   schedule: IDaySchedule[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const timetableSchema = new Schema<ITimetable>({

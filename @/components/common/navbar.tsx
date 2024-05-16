@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
     Cloud,
+    Eye,
     LogOut,
     Settings,
     UserRound
@@ -49,6 +50,7 @@ export default function Navbar() {
                             <BsInstagram className="w-5 h-5" />
                         </Link>
                     </div>
+
                     <div className="border-r border-gray-300 dark:border-neutral-800 h-8" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -68,16 +70,17 @@ export default function Navbar() {
                                     <span>Settings</span>
                                     {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
                                 </DropdownMenuItem>
-                                {/* <DropdownMenuItem>
-                                    <Keyboard className="mr-2 h-4 w-4" />
-                                    <span>Keyboard shortcuts</span>
-                                    <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                                </DropdownMenuItem> */}
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem disabled>
                                 <Cloud className="mr-2 h-4 w-4" />
                                 <span>API</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem disabled>
+                                <Eye className="mr-2 h-4 w-4" />
+                                <span>
+                                    <img src="https://visitor-badge.laobi.icu/badge?page_id=nith_portal.visitor-badge" alt="Visitor counter" className="inline-block font-inherit" />
+                                </span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/", })} className='cursor-pointer'>
