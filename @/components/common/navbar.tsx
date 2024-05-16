@@ -35,22 +35,24 @@ export default function Navbar() {
                     {process.env.NEXT_PUBLIC_WEBSITE_NAME}
                 </Link>
                 <div className="flex items-center gap-5">
-                    <Link href="https://x.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1 ease-in duration-300 flex justify-center items-center h-8 icon"}>
-                        <RiTwitterXFill className="w-5 h-5" />
-                    </Link>
-                    <Link href="https://linkedin.com/in/kanak-kholwal" className={" hover:text-primary hover:-translate-y-1 ease-in duration-300 flex justify-center items-center h-8 icon"}>
-                        <FiLinkedin className="w-5 h-5" />
-                    </Link>
-                    <Link href="https://github.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1  ease-in duration-300 flex justify-center items-center h-16 icon"}>
-                        <LuGithub className="w-5 h-5" />
-                    </Link>
-                    <Link href="https://instagram.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1  ease-in duration-300 flex justify-center items-center h-16 icon"}>
-                        <BsInstagram className="w-5 h-5" />
-                    </Link>
+                    <div className="items-center gap-5 hidden sm:inline-flex">
+                        <Link href="https://x.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1 ease-in duration-300 flex justify-center items-center h-8 icon"}>
+                            <RiTwitterXFill className="w-5 h-5" />
+                        </Link>
+                        <Link href="https://linkedin.com/in/kanak-kholwal" className={" hover:text-primary hover:-translate-y-1 ease-in duration-300 flex justify-center items-center h-8 icon"}>
+                            <FiLinkedin className="w-5 h-5" />
+                        </Link>
+                        <Link href="https://github.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1  ease-in duration-300 flex justify-center items-center h-16 icon"}>
+                            <LuGithub className="w-5 h-5" />
+                        </Link>
+                        <Link href="https://instagram.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1  ease-in duration-300 flex justify-center items-center h-16 icon"}>
+                            <BsInstagram className="w-5 h-5" />
+                        </Link>
+                    </div>
                     <div className="border-r border-gray-300 dark:border-neutral-800 h-8" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="link" size="icon" rounded="full"><UserRound/></Button>
+                            <Button variant="link" size="icon" rounded="full"><UserRound /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" side="bottom" align="end">
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -72,7 +74,7 @@ export default function Navbar() {
                                     <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
                                 </DropdownMenuItem> */}
                             </DropdownMenuGroup>
-                            <DropdownMenuSeparator />            
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem disabled>
                                 <Cloud className="mr-2 h-4 w-4" />
                                 <span>API</span>
