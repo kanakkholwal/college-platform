@@ -31,7 +31,7 @@ export default async function RoomsPage({
                 Rooms <span className="text-primary">Search</span>
             </h2>
             <p className="mt-4 text-neutral-700 dark:text-neutral-300" data-aos="zoom-in">
-                Search for syllabus of any course in NITH
+                Search for rooms based on their availability and type.
             </p>
             <div className="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6 w-full mx-auto max-w-2xl" data-aos="fade-up" data-aos-anchor-placement="center-bottom">
                 <Suspense fallback={<>
@@ -42,26 +42,14 @@ export default async function RoomsPage({
             </div>
 
         </section>
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 xl:px-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
-            <Suspense key="Rooms" fallback={<>
-                <Skeleton className="h-12 w-full " />
-                <Skeleton className="h-12 w-full " />
-                <Skeleton className="h-12 w-full " />
-            </>}>
+        <div className="max-w-[1440px] mx-auto grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {rooms.map((room) => {
                     return <RoomCardPublic key={room._id.toString()} room={room} />
                 })}
-            </Suspense>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 md:px-12 xl:px-6 mt-5">
-            <Suspense key="Pagination" fallback={<>
-                <Skeleton className="h-12 w-full " />
-            </>}>
                 {rooms.length > 0 ? <Pagination totalPages={totalPages} /> : null}
-            </Suspense>
-
         </div>
 
     </>

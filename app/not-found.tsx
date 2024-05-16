@@ -1,9 +1,10 @@
 
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
 import { Metadata } from "next";
-
+import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
     title: "Not Found | College Platform",
     description: "The page you are looking for does not exist.",
@@ -14,13 +15,11 @@ export default async function NotFound() {
 
     return <>
 
-        <div className="flex flex-col justify-center items-center p-4 w-full h-full gap-4 mt-10 py-36">
-
-
+        <div className="flex flex-col justify-center items-center p-4 w-full h-full gap-4 py-36">
             <h2 className="text-5xl font-bold text-slate-900 dark:text-gray-100 text-center">
                 Sorry, Page Not Found!
             </h2>
-            <p className="text-md  text-gray-500 dark:text-gray-400 mt-5 text-center">
+            <p className="text-md  text-gray-700 dark:text-gray-400 mt-5 text-center">
                 Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be sure to check your spelling.
             </p>
             <svg className="w-full h-80 my-4" viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg">
@@ -36,6 +35,14 @@ export default async function NotFound() {
                         <stop offset={1} stopColor="#0351AB" />
                     </linearGradient>
                 </defs></svg>
+            <div className="flex mx-auto gap-4">
+                <Button rounded="full" variant="default_light" width="sm" size="lg" asChild>
+                    <Link href="/">
+                        <ArrowLeft/>
+                        Go to Home
+                    </Link>
+                </Button>
+            </div>
         </div>
     </>
 }

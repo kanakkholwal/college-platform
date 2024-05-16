@@ -1,13 +1,28 @@
 "use client";
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { LogOut } from 'lucide-react';
+import {
+    Cloud,
+    LogOut,
+    Settings,
+    UserRound
+} from 'lucide-react';
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { BsInstagram } from "react-icons/bs";
 import { FiLinkedin } from "react-icons/fi";
 import { LuGithub } from "react-icons/lu";
 import { RiTwitterXFill } from "react-icons/ri";
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
 
@@ -33,7 +48,43 @@ export default function Navbar() {
                         <BsInstagram className="w-5 h-5" />
                     </Link>
                     <div className="border-r border-gray-300 dark:border-neutral-800 h-8" />
-                    <Button onClick={() => signOut({ callbackUrl: "/", })} variant="default_light" size="sm"> Log Out<LogOut /></Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="link" size="icon" rounded="full"><UserRound/></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" side="bottom" align="end">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem>
+                                    <UserRound className="mr-2 h-4 w-4" />
+                                    <span>Profile</span>
+                                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Settings className="mr-2 h-4 w-4" />
+                                    <span>Settings</span>
+                                    {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
+                                </DropdownMenuItem>
+                                {/* <DropdownMenuItem>
+                                    <Keyboard className="mr-2 h-4 w-4" />
+                                    <span>Keyboard shortcuts</span>
+                                    <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+                                </DropdownMenuItem> */}
+                            </DropdownMenuGroup>
+                            <DropdownMenuSeparator />            
+                            <DropdownMenuItem disabled>
+                                <Cloud className="mr-2 h-4 w-4" />
+                                <span>API</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/", })} className='cursor-pointer'>
+                                <LogOut className="mr-2 h-4 w-4" />
+                                <span>Log out</span>
+                                {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </nav>
 
