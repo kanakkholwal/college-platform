@@ -4,15 +4,11 @@ import { DEPARTMENTS_LIST } from 'src/constants/departments';
 interface IEvent extends Document {
   title: string;
   description?: string;
-  startDateTime: Date;
-  endDateTime: Date;
 }
 
 const eventSchema = new Schema<IEvent>({
   title: { type: String, required: true },
   description: { type: String },
-  startDateTime: { type: Date, required: true },
-  endDateTime: { type: Date, required: true },
 });
 
 interface ITimeSlot extends Document {
@@ -56,7 +52,7 @@ const timetableSchema = new Schema<ITimetable>({
 }, {
   timestamps: true
 });
-export type { ITimetable, IEvent, ITimeSlot, IDaySchedule };
+export type { IDaySchedule, IEvent, ITimeSlot, ITimetable };
 const Timetable = mongoose.model<ITimetable>('Timetable', timetableSchema);
 
 export default Timetable;

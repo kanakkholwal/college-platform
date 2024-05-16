@@ -1,149 +1,307 @@
 "use client"
-
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
-import { daysMap, FormattedTimetable, timeMap } from './time-table';
+import { create } from 'zustand';
+import { shallow } from 'zustand/shallow';
+import { FormattedTimetable } from './time-table';
+import { daysMap, timeMap } from "./time-table-constants";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
+import { DEPARTMENTS_LIST } from "src/constants/departments";
+import { useMediaQuery } from 'usehooks-ts';
+
+export type TimeTableState = {
+    timetableData: FormattedTimetable
+    isEditing: boolean;
+    editingEvent: {
+        dayIndex: number;
+        timeSlotIndex: number;
+        eventIndex: number;
+    };
+};
+
+
+export const useTimetableStore = create<TimeTableState>((set) => ({
+    timetableData: {
+        department_code: "",
+        sectionName: "",
+        year: 1,
+        semester: 1,
+        schedule: Array.from(daysMap.entries()).map((_, dayIndex) => ({
+            day: dayIndex,
+            timeSlots: Array.from(timeMap.entries()).map((_, timeSlotIndex) => ({
+                startTime: timeSlotIndex,
+                endTime: timeSlotIndex + 1,
+                events: [] as FormattedTimetable['schedule'][0]['timeSlots'][0]['events']
+            }))
+        }))
+    },
+    isEditing: false,
+    editingEvent: {
+        dayIndex: 0,
+        timeSlotIndex: 0,
+        eventIndex: 0
+    },
+}))
 
 
 
 
-interface EditTimetableDialogProps {
-    timetableData: FormattedTimetable;
-    onSave: (updatedTimetableData: FormattedTimetable) => void;
-}
+const EditTimetableDialog: React.FC = () => {
+    const { timetableData, isEditing, editingEvent } = useTimetableStore(
+        (state) => ({
+            timetableData: state.timetableData,
+            isEditing: state.isEditing,
+            editingEvent: state.editingEvent,
+        }),
+        shallow
+    );
 
-const EditTimetableDialog: React.FC<EditTimetableDialogProps> = ({ timetableData, onSave }) => {
-    const [updatedTimetableData, setUpdatedTimetableData] = useState<FormattedTimetable>(timetableData);
+    const [newEvent, setNewEvent] = useState<FormattedTimetable['schedule'][0]['timeSlots'][0]['events'][0]>({
+        title: '',
+        description: '',
+    });
 
     const handleSave = () => {
-        onSave(updatedTimetableData);
+        const updatedTimetableData = {
+            ...timetableData,
+            schedule: timetableData.schedule.map((daySchedule, dayIndex) => {
+                if (dayIndex === editingEvent.dayIndex) {
+                    return {
+                        ...daySchedule,
+                        timeSlots: daySchedule.timeSlots.map((timeSlot, timeSlotIndex) => {
+                            if (timeSlotIndex === editingEvent.timeSlotIndex) {
+                                const updatedEvents = [...timeSlot.events];
+                                if (editingEvent.eventIndex !== -1) {
+                                    updatedEvents[editingEvent.eventIndex] = newEvent;
+                                } else {
+                                    updatedEvents.push(newEvent);
+                                }
+                                return { ...timeSlot, events: updatedEvents };
+                            }
+                            return timeSlot;
+                        }),
+                    };
+                }
+                return daySchedule;
+            }),
+        };
+        useTimetableStore.setState({ timetableData: updatedTimetableData, isEditing: false, editingEvent: { dayIndex: 0, timeSlotIndex: 0, eventIndex: -1 } });
+        setNewEvent({ title: '', description: '' });
     };
 
-    const handleChange = (field: keyof FormattedTimetable, value: any) => {
-        setUpdatedTimetableData((prevData) => ({ ...prevData, [field]: value }));
+    const handleCancel = () => {
+        useTimetableStore.setState({ isEditing: false, editingEvent: { dayIndex: 0, timeSlotIndex: 0, eventIndex: -1 } });
     };
 
-    const handleEventChange = (dayIndex: number, timeSlotIndex: number, eventIndex: number, field: keyof FormattedTimetable['schedule'][0]['timeSlots'][0]['events'][0], value: any) => {
-        setUpdatedTimetableData((prevData) => {
-            const updatedSchedule = [...prevData.schedule];
-            const updatedTimeSlot = { ...updatedSchedule[dayIndex].timeSlots[timeSlotIndex] };
-            const updatedEvents = [...updatedTimeSlot.events];
-            updatedEvents[eventIndex] = { ...updatedEvents[eventIndex], [field]: value };
-            updatedTimeSlot.events = updatedEvents;
-            updatedSchedule[dayIndex].timeSlots[timeSlotIndex] = updatedTimeSlot;
-            return { ...prevData, schedule: updatedSchedule };
-        });
+    const handleEventChange = (field: keyof typeof newEvent, value: any) => {
+        setNewEvent((prevEvent) => ({ ...prevEvent, [field]: value }));
     };
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button>Edit Timetable</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <div className="text-xl font-semibold">Edit Timetable</div>
-                </DialogHeader>
+        <Sheet open={isEditing} onOpenChange={(value) => useTimetableStore.setState({ isEditing: value })}>
+            <SheetContent>
+                <SheetHeader>
+                    <SheetTitle>Edit Event</SheetTitle>
+                    <SheetDescription className="font-semibold">
+                        {daysMap.get(editingEvent.dayIndex)} : {timeMap.get(editingEvent.timeSlotIndex)}
+                    </SheetDescription>
+                </SheetHeader>
                 <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-2">
-                        <Label htmlFor="department" className="text-right">
-                            Department
+                    <div className="grid items-center gap-2">
+                        <Label htmlFor="event-title">
+                            Title
                         </Label>
-                        <Input id="department" value={updatedTimetableData.department} className="col-span-3" onChange={(e) => handleChange('department', e.target.value)} />
+                        <Input
+                            id="event-title"
+                            value={newEvent.title}
+                            className="col-span-3"
+                            variant="fluid"
+                            onChange={(e) => handleEventChange('title', e.target.value)}
+                        />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-2">
-                        <Label htmlFor="sectionName" className="text-right">
-                            Section
+                    <div className="grid items-center gap-2">
+                        <Label htmlFor="event-description">
+                            Description
                         </Label>
-                        <Input id="sectionName" value={updatedTimetableData.sectionName} className="col-span-3" onChange={(e) => handleChange('sectionName', e.target.value)} />
+                        <Textarea
+                            id="event-description"
+                            value={newEvent.description}
+                            className="col-span-3"
+                            onChange={(e) => handleEventChange('description', e.target.value)}
+                        />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-2">
-                        <Label htmlFor="year" className="text-right">
-                            Year
-                        </Label>
-                        <Input id="year" type="number" value={updatedTimetableData.year} className="col-span-3" onChange={(e) => handleChange('year', parseInt(e.target.value))} />
+                    <div className="flex items-center space-x-2 justify-between">
+                        <Label htmlFor="is-new" className="mb-0">New Event</Label>
+                        <Switch id="is-new"
+                            checked={editingEvent.eventIndex === timetableData.schedule[editingEvent.dayIndex]?.timeSlots[editingEvent.timeSlotIndex]?.events.length}
+                            onCheckedChange={(checked) => {
+                                useTimetableStore.setState({
+                                    editingEvent: {
+                                        ...editingEvent,
+                                        eventIndex: checked ? timetableData.schedule[editingEvent.dayIndex]?.timeSlots[editingEvent.timeSlotIndex]?.events.length : 0
+                                    }
+                                });
+                            }}
+                        />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-2">
-                        <Label htmlFor="semester" className="text-right">
-                            Semester
-                        </Label>
-                        <Input id="semester" type="number" value={updatedTimetableData.semester} className="col-span-3" onChange={(e) => handleChange('semester', parseInt(e.target.value))} />
+                    <div className="grid grid-cols-2 items-center gap-2">
+                        <Button onClick={handleSave}>Save</Button>
+                        <Button variant="outline" onClick={handleCancel}>
+                            Cancel
+                        </Button>
                     </div>
-                    <Separator className="my-4" />
-                    {updatedTimetableData.schedule.map((daySchedule, dayIndex) => (
-                        <div key={dayIndex}>
-                            <h3 className="text-lg font-semibold mb-2">{daysMap.get(daySchedule.day)}</h3>
-                            {daySchedule.timeSlots.map((timeSlot, timeSlotIndex) => (
-                                <div key={`${dayIndex}-${timeSlotIndex}`} className="mb-4">
-                                    <h4 className="text-sm font-semibold mb-2">{timeMap.get(timeSlot.startTime)} - {timeMap.get(timeSlot.endTime)}</h4>
-                                    {timeSlot.events.map((event, eventIndex) => (
-                                        <div key={`${dayIndex}-${timeSlotIndex}-${eventIndex}`} className="mb-2">
-                                            <div className="grid grid-cols-4 items-center gap-2">
-                                                <Label htmlFor={`event-title-${dayIndex}-${timeSlotIndex}-${eventIndex}`} className="text-right">
-                                                    Title
-                                                </Label>
-                                                <Input
-                                                    id={`event-title-${dayIndex}-${timeSlotIndex}-${eventIndex}`}
-                                                    value={event.title}
-                                                    className="col-span-3"
-                                                    onChange={(e) => handleEventChange(dayIndex, timeSlotIndex, eventIndex, 'title', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-4 items-center gap-2">
-                                                <Label htmlFor={`event-description-${dayIndex}-${timeSlotIndex}-${eventIndex}`} className="text-right">
-                                                    Description
-                                                </Label>
-                                                <Textarea
-                                                    id={`event-description-${dayIndex}-${timeSlotIndex}-${eventIndex}`}
-                                                    value={event.description}
-                                                    className="col-span-3"
-                                                    onChange={(e) => handleEventChange(dayIndex, timeSlotIndex, eventIndex, 'description', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-4 items-center gap-2">
-                                                <Label htmlFor={`event-startTime-${dayIndex}-${timeSlotIndex}-${eventIndex}`} className="text-right">
-                                                    Start Time
-                                                </Label>
-                                                <Input
-                                                    id={`event-startTime-${dayIndex}-${timeSlotIndex}-${eventIndex}`}
-                                                    type="datetime-local"
-                                                    value={event.startDateTime.toISOString().slice(0, 16)}
-                                                    className="col-span-3"
-                                                    onChange={(e) => handleEventChange(dayIndex, timeSlotIndex, eventIndex, 'startDateTime', new Date(e.target.value))}
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-4 items-center gap-2">
-                                                <Label htmlFor={`event-endTime-${dayIndex}-${timeSlotIndex}-${eventIndex}`} className="text-right">
-                                                    End Time
-                                                </Label>
-                                                <Input
-                                                    id={`event-endTime-${dayIndex}-${timeSlotIndex}-${eventIndex}`}
-                                                    type="datetime-local"
-                                                    value={event.endDateTime.toISOString().slice(0, 16)}
-                                                    className="col-span-3"
-                                                    onChange={(e) => handleEventChange(dayIndex, timeSlotIndex, eventIndex, 'endDateTime', new Date(e.target.value))}
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ))}
-                        </div>
-                    ))}
                 </div>
-                <DialogFooter>
-                    <Button type="submit" onClick={handleSave}>
-                        Save
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                <div className="grid gap-4 py-4">
+                    {/* map all the events in the same time and day */}
+                    {timetableData.schedule[editingEvent.dayIndex]?.timeSlots[editingEvent.timeSlotIndex]?.events.map((event, eventIndex) => {
+                        return (
+                            <div key={eventIndex} className={cn("flex items-center justify-between whitespace-nowrap gap-2 border p-2 rounded-lg bg-gray-200", editingEvent.eventIndex === eventIndex ? "bg-primary/10" : "")}>
+                                <span className="font-semibold">{event.title}</span>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        useTimetableStore.setState({
+                                            isEditing: true,
+                                            editingEvent: { dayIndex: editingEvent.dayIndex, timeSlotIndex: editingEvent.timeSlotIndex, eventIndex },
+                                        });
+                                        setNewEvent(event);
+                                    }}
+                                >
+                                    Edit
+                                </Button>
+                            </div>
+                        );
+                    })}
+                </div>
+            </SheetContent>
+        </Sheet>
     );
 };
+export function TimeTableMetaData() {
+    const [open, setOpen] = React.useState(false)
+    const isDesktop = useMediaQuery("(min-width: 768px)")
 
+    if (isDesktop) {
+        return (
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                    <Button variant="default_light" size="sm">Edit Metadata</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Edit Metadata</DialogTitle>
+                        <DialogDescription>
+                            Edit the metadata of the timetable
+                        </DialogDescription>
+                    </DialogHeader>
+                    <MetaDataForm />
+                </DialogContent>
+            </Dialog>
+        )
+    }
+
+    return (
+        <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>
+                <Button variant="default_light" size="sm">Edit Metadata</Button>
+            </DrawerTrigger>
+            <DrawerContent>
+                <DrawerHeader className="text-left">
+                    <DrawerTitle>Edit Metadata</DrawerTitle>
+                    <DrawerDescription>
+                        Edit the metadata of the timetable
+                    </DrawerDescription>
+                </DrawerHeader>
+                <MetaDataForm className="px-4" />
+                <DrawerFooter className="pt-2">
+                    <DrawerClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                    </DrawerClose>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
+    )
+}
+
+function MetaDataForm({ className }: React.ComponentProps<"form">) {
+    const { timetableData } = useTimetableStore(
+        (state) => ({
+            timetableData: state.timetableData
+        }),
+        shallow
+    );
+    return (
+        <div className={cn("grid items-start gap-4", className)}>
+            <div className="grid gap-2">
+                <Label htmlFor="department">Department</Label>
+                <Select
+                value={timetableData.department_code}
+                onValueChange={(value) => useTimetableStore.setState({ timetableData: { ...timetableData, department_code: value } })}
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Choose department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {DEPARTMENTS_LIST.map((department) => {
+                            return (<SelectItem value={department.code} key={department.code}>{department.name}</SelectItem>);
+                        })}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="sectionName">Section Name</Label>
+                <Input id="sectionName" defaultValue="ECE 3-B"
+                    value={timetableData.sectionName}
+                    onChange={(e) => useTimetableStore.setState({ timetableData: { ...timetableData, sectionName: e.target.value } })}
+                />
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="year">Year</Label>
+                <Input id="year" type="number" defaultValue="3" min={1} max={5}
+                    value={timetableData.year}
+                    onChange={(e) => useTimetableStore.setState({ timetableData: { ...timetableData, year: parseInt(e.target.value) } })}
+                />
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="semester">Semester</Label>
+                <Input id="semester" type="number" defaultValue="1" min={1} max={10}
+                    value={timetableData.semester}
+                    onChange={(e) => useTimetableStore.setState({ timetableData: { ...timetableData, semester: parseInt(e.target.value) } })}
+                />
+            </div>
+        </div>
+    )
+}
 export default EditTimetableDialog;
