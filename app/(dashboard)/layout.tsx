@@ -1,4 +1,4 @@
-import Navbar from "@/common/navbar";
+import Navbar from "@/components/common/navbar";
 import Unauthorized from "@/screens/unauthorized";
 import type { Metadata } from "next";
 
