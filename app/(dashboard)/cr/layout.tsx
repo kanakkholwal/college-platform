@@ -1,12 +1,11 @@
-import Navbar from "@/components/common/navbar";
-import Unauthorized from "@/screens/unauthorized";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 import { getSession } from "src/lib/auth";
 import { sessionType } from "src/types/session";
 
 export const metadata: Metadata = {
-    title: "NITH - College Platform",
+    title: "CR Dashboard",
     description: "NITH - College Platform",
 };
 
@@ -18,15 +17,12 @@ type LayoutProps = Readonly<{
 }>
 
 export default async function Layout({ children }: LayoutProps) {
-    const session = await getSession() as sessionType | null
-    const authorized = !!session?.user;
-    console.log(session)
-    if (!authorized)
-        return <Unauthorized />
+    const session = await getSession() as sessionType;
+    const isCr = session.user.roles.includes('cr');
 
-    return <>
-        <Navbar />
-        {children}
-    </>
+    if (!isCr)
+        return redirect(`/${session.user.roles[0]}`)
+
+    return children
 }
 
