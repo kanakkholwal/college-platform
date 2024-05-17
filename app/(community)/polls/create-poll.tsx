@@ -21,19 +21,36 @@ import {
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { useRefWithFocus } from "@/hooks/useRefWithFocus";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { rawPollSchema } from "src/models/poll";
+import toast from "react-hot-toast";
+import { createPoll } from "src/lib/poll/actions";
 import { useMediaQuery } from "usehooks-ts";
-import { z } from "zod";
+import * as z from 'zod';
+
+
+
+
+export const rawPollSchema = z.object({
+    question: z.string(),
+    description: z.string().optional(),
+    options: z.array(z.string().min(1, 'Option cannot be empty')).min(2, 'At least two options are required'),
+    multipleChoice: z.boolean().default(false),
+    votes: z.array(z.string()).default([]),
+    closesAt: z.date().default(() => new Date(Date.now() + 6 * 60 * 60 * 1000)), // Default to 6 hours from now
+});
+
 
 
 export default function CreatePoll() {
@@ -84,7 +101,7 @@ export default function CreatePoll() {
 
 
 
-function PollForm({ className }: React.ComponentProps<"form">) {
+function PollForm({ className }: { className?: string }) {
     const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof rawPollSchema>>({
@@ -95,33 +112,22 @@ function PollForm({ className }: React.ComponentProps<"form">) {
             options: ["", ""],
             multipleChoice: false,
         },
-    })
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof rawPollSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    });
+
+    async function onSubmit(values: z.infer<typeof rawPollSchema>) {
+        console.log('Form submitted with values:', values);    
+        setLoading(true);
+        toast.promise(createPoll(values), {
+            loading: "Creating poll...",
+            success: "Poll created successfully",
+            error: "Failed to create poll",
+        }).finally(() => setLoading(false))
+
     }
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className={cn("grid items-start gap-4", className)}>
-                {/* <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                This is your public display name.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                /> */}
                 <FormField
                     control={form.control}
                     name="question"
@@ -129,7 +135,7 @@ function PollForm({ className }: React.ComponentProps<"form">) {
                         <FormItem>
                             <FormLabel>Question</FormLabel>
                             <FormControl>
-                                <Input placeholder="Who is most popular person?" {...field} />
+                                <Input placeholder="Who is most popular person?" disabled={form.formState.isSubmitting} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -142,7 +148,7 @@ function PollForm({ className }: React.ComponentProps<"form">) {
                         <FormItem>
                             <FormLabel>Description</FormLabel>
                             <FormControl>
-                                <Input placeholder="Description" {...field} />
+                                <Input placeholder="Who will be the winner?" disabled={form.formState.isSubmitting} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -151,13 +157,65 @@ function PollForm({ className }: React.ComponentProps<"form">) {
                 <FormField
                     control={form.control}
                     name="options"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
-                            <FormLabel>Options</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Option 1" {...field} />
-                                <Input placeholder="Option 2" {...field} />
-                            </FormControl>
+                            <div className="flex items-center space-x-2 justify-between">
+                                <FormLabel className="mb-0">Options</FormLabel>
+                                <Button size="sm" type="button" variant="default_light" onClick={() => {
+                                    form.setValue("options", [...form.getValues("options"), ""])
+                                }}>Add Option</Button>
+                            </div>
+                            <FormDescription>
+                                Add the options for the poll
+                            </FormDescription>
+                            {form.getValues("options").map((item, index) => (
+                                <FormField
+                                    key={item + "_" + index}
+                                    control={form.control}
+                                    name={`options.${index}`}
+                                    render={({ field }) => {
+                                        const inputRef = useRefWithFocus<HTMLInputElement>();
+                                        const { ref, ...rest } = field; // Destructure ref from field
+
+                                        useEffect(() => {
+                                            inputRef.current?.focus();
+                                        }, [item]);
+                                        return (
+                                            <FormItem
+                                                key={item}
+                                                className="flex flex-row space-x-3 space-y-0"
+                                            >
+                                                <FormLabel className="size-8 rounded-md p-3 inline-flex justify-center items-center mb-0">
+                                                    {index + 1}
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        ref={inputRef}
+                                                        placeholder={`Enter Option ${index + 1}`}
+                                                        {...rest}
+                                                        disabled={form.formState.isSubmitting}
+                                                        onChange={(event) => {
+                                                            const newOptions = [...form.getValues("options")];
+                                                            newOptions[index] = event.target.value;
+                                                            form.setValue("options", newOptions);
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                                <Button type="button" size="icon" variant="default_light" onClick={() => {
+                                                    const newOptions = form
+                                                        .getValues("options")
+                                                        .filter((_, i) => i !== index);
+                                                    form.setValue("options", newOptions);
+                                                }}>
+                                                    -
+                                                </Button>
+                                                <FormMessage />
+
+                                            </FormItem>
+                                        )
+                                    }}
+                                />
+                            ))}
                             <FormMessage />
                         </FormItem>
                     )}
@@ -166,17 +224,21 @@ function PollForm({ className }: React.ComponentProps<"form">) {
                     control={form.control}
                     name="multipleChoice"
                     render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Multiple Choice</FormLabel>
+                        <FormItem className="flex items-center space-x-2 justify-between">
+                            <FormLabel className="mb-0">Multiple Choice</FormLabel>
                             <FormControl>
-                                {/* <Input type="checkbox" {...field} /> */}
+                                <Switch checked={field.value}
+                                    onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                
-                <Button type="submit">Submit</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}
+                // onClick={() => form.handleSubmit(onSubmit)()}
+                >
+                    {loading ? "Creating Poll..." : "Create Poll"}
+                </Button>
             </form>
         </Form>
     )

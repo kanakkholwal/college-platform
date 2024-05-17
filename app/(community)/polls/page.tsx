@@ -1,10 +1,16 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSession } from "src/lib/auth";
+import { getClosedPolls, getOpenPolls, getPollsCreatedByLoggedInUser } from "src/lib/poll/actions";
+import { PollType } from 'src/models/poll';
 import { sessionType } from "src/types/session";
+import PollComponent from "./components/poll-component";
 import CreatePoll from "./create-poll";
+
 
 export default async function Dashboard() {
     const session = await getSession() as sessionType;
+
+    const [openPolls,closedPolls,userPolls] = await Promise.all([getOpenPolls(),getClosedPolls(),getPollsCreatedByLoggedInUser()]);
 
     return (<Tabs defaultValue="opened" className="w-full">
         <TabsList className="w-full h-14 px-2 gap-2">
@@ -14,16 +20,23 @@ export default async function Dashboard() {
         </TabsList>
         <div className="bg-white/20 backdrop-blur-lg mt-5 rounded-lg p-4">
             <TabsContent value="opened">
-                Open polls
+                <div className="w-full flex justify-between items-center whitespace-nowrap gap-2">
+                    <h3 className="text-xl font-semibold">Open polls</h3>
+                </div>
+                {openPolls.map((poll:PollType) => <PollComponent poll={poll} key={poll._id}/>)}
             </TabsContent>
             <TabsContent value="closed">
-                Closed polls
+                <div className="w-full flex justify-between items-center whitespace-nowrap gap-2">
+                    <h3 className="text-xl font-semibold">Closed polls</h3>
+                </div>
+                {closedPolls.map((poll:PollType) => <PollComponent poll={poll} key={poll._id}/>)}
             </TabsContent>
             <TabsContent value="by-you">
                 <div className="w-full flex justify-between items-center whitespace-nowrap gap-2">
                     <h3 className="text-xl font-semibold">Polls created by you</h3>
                     <CreatePoll/>
                 </div>
+                {userPolls.map((poll:PollType) => <PollComponent poll={poll} key={poll._id}/>)}
             </TabsContent>
         </div>
     </Tabs>);

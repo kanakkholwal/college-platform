@@ -15,7 +15,7 @@ export default async function CommunityLayout({ children }: { children: React.Re
 
     return <div className="flex min-h-screen h-full w-full flex-col items-center justify-start @container/layout-0 space-y-4 max-w-[1680px] mx-auto px-3">
         <Navbar />
-        <div className="flex w-full mt-8 gap-4">
+        <div className="flex w-full mt-32 lg:mt-8 gap-4">
             <Sidebar />
             <main className="flex-1 @container flex-col items-center justify-start space-y-4">
                 {children}
