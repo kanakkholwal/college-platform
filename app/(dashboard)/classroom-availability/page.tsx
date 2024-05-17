@@ -43,8 +43,10 @@ export default async function RoomsPage({
 
         </section>
         <div className="max-w-[1440px] mx-auto grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {rooms.map((room) => {
-                    return <RoomCardPublic key={room._id.toString()} room={room} />
+                {rooms.map((room,i) => {
+                    return <RoomCardPublic key={room._id.toString()} room={room} style={{
+                        animationDelay: `${i * 100}ms`
+                    }}/>
                 })}
         </div>
 

@@ -21,8 +21,8 @@ function formatDateAgo(dateString: string): string {
 }
 
 
-export function RoomCardPublic({ room }: { room: RoomTypeWithId }) {
-    return <Card variant="glass" className="hover:shadow-lg">
+export function RoomCardPublic({ room ,...props}: { room: RoomTypeWithId } & React.ComponentProps<typeof Card>) {
+    return <Card variant="glass" className="hover:shadow-lg  animate-in popup"  {...props}>
         <CardHeader>
             <CardTitle>
                 {room.roomNumber}

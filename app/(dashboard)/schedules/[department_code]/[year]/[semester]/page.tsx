@@ -1,6 +1,9 @@
 import { TimeTable } from "@/components/custom/time-table";
 import { StoreInitializer } from "@/components/custom/time-table-editor";
 import { useTimetableStore } from "@/components/custom/time-table-store";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSession } from "src/lib/auth";
 import { getTimeTable } from "src/lib/time-table/actions";
@@ -32,6 +35,14 @@ export default async function Dashboard({ params }: Props) {
     })
 
     return (<>
+    <div className="flex items-center justify-between gap-2 mx-auto max-w-7xl w-full mt-20">
+        <Button variant="default_light" size="sm" asChild>
+            <Link href={`/schedules`}>
+                <ArrowLeft/>
+                Go Back
+            </Link>
+        </Button>
+    </div>
         <StoreInitializer timetableData={timetableData} isEditing={false} />
         <TimeTable timetableData={timetableData} mode="view" />
     </>)

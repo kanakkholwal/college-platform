@@ -26,12 +26,15 @@ export async function getTimeTable(department_code: string, year: number, semest
     }
 
 }
-export async function getAllTimeTables() {
+export async function getAllTimeTables():Promise<Partial<TimeTableWithID>[]>  {
     try {
         await dbConnect();
 
         // Find all timetables
-        const timetables = await Timetable.find({});
+        const timetables = await Timetable.find({})
+        .select('department_code sectionName year semester author updatedAt')
+        .sort({ department_code: 1, year: 1, semester: 1 })
+        .exec();
 
         return Promise.resolve(JSON.parse(JSON.stringify(timetables)));
     } catch (err) {
@@ -41,14 +44,14 @@ export async function getAllTimeTables() {
 
 }
 export async function createTimeTable(timetableData: RawTimetable) {
-    // const session = await getSession();
-    // if (!session) {
-    //     return Promise.reject("You need to be logged in to view the timetable");
-    // }
+    const session = await getSession();
+    if (!session) {
+        return Promise.reject("You need to be logged in to view the timetable");
+    }
     try {
-        // if (!session.user.roles.includes("admin") && !session.user.roles.includes("faculty") && !session.user.roles.includes("cr") || !session.user.roles.includes("moderator")) {
-        //     return Promise.reject("Student can't create a timetable");
-        // }
+        if (!session.user.roles.includes("admin") && !session.user.roles.includes("faculty") && !session.user.roles.includes("cr") || !session.user.roles.includes("moderator")) {
+            return Promise.reject("Student can't create a timetable");
+        }
 
         // Validate the timetable data
         if (!timetableData.department_code || !timetableData.sectionName || !timetableData.year || !timetableData.semester || !timetableData.schedule) {
@@ -68,7 +71,14 @@ export async function createTimeTable(timetableData: RawTimetable) {
         }
 
         // Create a new timetable document
-        const newTimetable = new Timetable(timetableData);
+        const newTimetable = new Timetable({
+            department_code: timetableData.department_code,
+            sectionName: timetableData.sectionName,
+            year: timetableData.year,
+            semester: timetableData.semester,
+            schedule: timetableData.schedule,
+            author: session.user._id
+        });
 
         // Save the timetable document
         await newTimetable.save();

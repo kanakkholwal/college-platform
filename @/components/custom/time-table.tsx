@@ -24,8 +24,6 @@ export type TimetableProps = {
     saveTimetable?: (timetableData: FormattedTimetable) => Promise<string>;
 }
 
-
-
 export function TimeTable({ timetableData, mode = "view", saveTimetable }: TimetableProps) {
 
     const { timetableData: stateTimetableData, isEditing } = useTimetableStore((state) => ({ timetableData: state.timetableData, isEditing: state.isEditing }));

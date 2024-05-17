@@ -64,6 +64,7 @@ const timetableSchema = new Schema<ITimetable>({
             }]
         }]
     }],
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
 }, {
     timestamps: true
 });

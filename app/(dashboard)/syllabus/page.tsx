@@ -65,10 +65,12 @@ export default async function CoursesPage({
                 <Skeleton className="h-12 w-full " />
                 <Skeleton className="h-12 w-full " />
             </>}>
-                {courses.map((course) => {
-                    return <Card variant="glass" key={course._id} className="hover:shadow-lg animate-in popup flex flex-col items-stretch justify-between">
+                {courses.map((course,i) => {
+                    return <Card variant="glass" key={course._id} className="hover:shadow-lg animate-in popup flex flex-col items-stretch justify-between" style={{
+                        animationDelay: `${i * 100}ms`
+                    }}>
                         <CardHeader className="px-3 py-4">
-                            <CardTitle>{course.name}</CardTitle>
+                            <CardTitle className="text-xl">{course.name}</CardTitle>
                             <CardDescription className="font-semibold text-gray-700">{course.code}</CardDescription>
                         </CardHeader>
                         <CardFooter className="justify-between p-3">

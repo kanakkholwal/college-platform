@@ -39,12 +39,14 @@ export default async function Dashboard() {
         </p>
       </section>
       <section id="quick-links" className="z-10 w-full max-w-6xl relative space-y-4 text-left">
-        <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100" data-aos="fade-right">
+        <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100" data-aos="fade-right" data-aos-duration="500">
           Quick Links
         </h2>
 
         <div className="mb-32 grid  lg:mb-0 lg:w-full mx-auto @5xl:max-w-6xl grid-cols-1 @md:grid-cols-2 @4xl:grid-cols-4 text-left gap-4">
-          {quick_links.map((link, index) => <RouterCard key={index} {...link} />)}
+          {quick_links.map((link, i) => <RouterCard key={i} {...link} style={{
+                        animationDelay: `${i * 500}ms`
+                    }}/>)}
         </div>
       </section>
 
@@ -57,14 +59,16 @@ interface RouterCardProps {
   title: string;
   description: string;
   external?: boolean;
+  style?: React.CSSProperties;
 }
 
-function RouterCard({ href, title, description, external = false }: RouterCardProps) {
+function RouterCard({ href, title, description, external = false,style }: RouterCardProps) {
   return (<Link
     href={href}
-    className="group rounded-lg  border border-gray-50/50 px-5 py-4 transition-colors backdrop-blur-2xl hover:bg-white/10 hover:shadow hover:border-primary/5"
+    className="group rounded-lg  border border-gray-50/50 px-5 py-4  animate-in popup  transition-colors backdrop-blur-2xl hover:bg-white/10 hover:shadow hover:border-primary/5"
     target={external ? "_blank" : "_self"}
     rel={external ? "noopener noreferrer" : undefined}
+    style={style}
   >
     <h2 className="mb-3 text-xl font-semibold whitespace-nowrap">
       {title}{" "}
