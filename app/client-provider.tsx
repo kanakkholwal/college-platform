@@ -28,9 +28,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
     }, [])
     return <SessionProvider>
         <canvas id="gradient-canvas" data-transition-in className="fixed inset-0 -z-[1]" />
-        <main className="flex min-h-screen flex-col items-center justify-between p-6 md:p-12 lg:p-24 @container space-y-4">
         {children}
-        </main>
         <Next13ProgressBar height="4px" color="hsl(var(--primary))" options={{ showSpinner: true, trickle: true }} showOnShallow={true} />
         <HotToaster
             position="bottom-right"
