@@ -1,3 +1,4 @@
+import EmptyArea from "@/components/common/empty-area";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -21,17 +22,19 @@ export default async function Dashboard() {
             <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-100 whitespace-nowrap" data-aos="fade-up">
                 Timetables for all departments
             </h2>
-            <p className="mt-4 text-lg text-neutral-700 dark:text-neutral-300"  data-aos="fade-up" data-aos-delay="500">
+            <p className="mt-4 text-lg text-neutral-700 dark:text-neutral-300" data-aos="fade-up" data-aos-delay="500">
                 CRs and Moderators can create timetables for their respective departments
             </p>
         </section>
         {timeTables.length === 0 ? <section className="max-w-6xl w-full xl:px-6 text-center">
-            <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-100 whitespace-nowrap" data-aos="fade-up">
-                NO TIMETABLES FOUND
-            </h2>
+
+            <EmptyArea
+                title="No Timetables found"
+                description="There are no timetables created yet. Please check back later"
+            />
         </section> :
             <section className="max-w-6xl w-full xl:px-6 grid gap-4 grid-cols-1 @md:grid-cols-2 @xl:grid-cols-3">
-                {timeTables.map((timetable,i) => {
+                {timeTables.map((timetable, i) => {
                     return <Card variant="glass" key={timetable._id} className="hover:shadow-lg animate-in popup flex flex-col items-stretch justify-between" style={{
                         animationDelay: `${i * 100}ms`
                     }}>
