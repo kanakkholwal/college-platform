@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 import { BsInstagram } from "react-icons/bs";
 import { FiLinkedin } from "react-icons/fi";
 import { LuGithub } from "react-icons/lu";
@@ -31,6 +32,7 @@ import { RiTwitterXFill } from "react-icons/ri";
 import { SidebarContent } from "./sidebar";
 
 export default function Navbar() {
+    const pathname = usePathname();
 
     return (
         <div className={cn(
@@ -38,7 +40,7 @@ export default function Navbar() {
         )}>
             <nav className={cn(
                 "mx-auto w-full p-4 lg:py-2 lg:rounded-xl lg:border border-b border-slate-900/5",
-                " flex items-center justify-between font-bold text-xl ")}>
+                "flex items-center justify-between font-bold text-xl")}>
                 <Link href="/" className="relative bg-gradient-to-r from-primary to-sky-500 bg-clip-text text-transparent hover:from-sky-500 hover:to-primary lg:text-xl whitespace-nowrap">
                     {process.env.NEXT_PUBLIC_WEBSITE_NAME}
                 </Link>
@@ -58,7 +60,7 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    <div className="border-r border-gray-300 dark:border-neutral-800 h-8" />
+                    <div className="border-r border-gray-300 dark:border-neutral-800 h-8 hidden lg:block" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="link" size="icon" rounded="full">
@@ -112,20 +114,25 @@ export default function Navbar() {
                             </svg>
                         </button>
                     </SheetTrigger>
-                    <SheetContent className="pt-8">
+                    <SheetContent className="pt-12">
                         <SidebarContent />
                     </SheetContent>
                 </Sheet>
-
-                {/* <ol className="ml-4 flex text-sm leading-6 whitespace-nowrap min-w-0">
-                    <li className="flex items-center">
-                    item 1
-                    <svg width={3} height={6} aria-hidden="true" className="mx-3 overflow-visible text-slate-400">
-                        <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
-                    </li>
-                    <li className="font-semibold text-slate-900 truncate dark:text-slate-200">item 2</li>
-                </ol> */}
+                <ol className="ml-4 flex text-sm font-semibold leading-6 whitespace-nowrap min-w-0 capitalize">
+                    {/* {pathname.split("/").slice(1).join(" / ") || "Home"} */}
+                    {pathname.split("/").slice(1).map((item, index) => {
+                        return (
+                            <li key={index} className={cn("flex items-center text-slate-900 ", index !== 0 && "truncate")}>
+                                {item}
+                                {index !== pathname.split("/").length - 1 && (
+                                    <svg width={3} height={6} aria-hidden="true" className="mx-3 overflow-visible text-slate-600">
+                                        <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                    </svg>
+                                )}
+                            </li>
+                        );
+                    })}
+                </ol>
             </div>
 
 

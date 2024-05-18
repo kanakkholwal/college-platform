@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTimeTable } from "src/lib/time-table/actions";
+import { getDepartmentName } from "src/constants/departments";
+import { getSession } from "src/lib/auth";
+import { getTimeTable, updateTimeTable } from "src/lib/time-table/actions";
 import { TimeTableWithID } from "src/models/time-table";
-// import { getSession } from "src/lib/auth";
-// import { sessionType } from "src/types/session";
+import { sessionType } from "src/types/session";
 
 interface Props {
     params: {
@@ -17,17 +18,26 @@ interface Props {
         semester: number;
     }
 }
+const super_access = ["admin", "moderator"];
 
 export default async function Dashboard({ params }: Props) {
-    // const session = await getSession() as sessionType;
+    const session = await getSession() as sessionType;
     const { department_code, year, semester } = params;
     const timetableData = await getTimeTable(department_code, Number(year), Number(semester));
     if (!timetableData)
         return notFound();
 
+    if (super_access.some(role => session.user.roles.includes(role)) === false) {
+        if (getDepartmentName(department_code) !== session.user.department) {
+            console.log("Department code mismatch");
+            return notFound();
+        }
+    }
+
+
     useTimetableStore.setState({
         timetableData: timetableData as TimeTableWithID,
-        isEditing: false,
+        isEditing: true,
         editingEvent: {
             dayIndex: 0,
             timeSlotIndex: 0,
@@ -38,15 +48,17 @@ export default async function Dashboard({ params }: Props) {
     return (<>
         <div className="flex items-center justify-between gap-2 mx-auto max-w-7xl w-full mt-20">
             <Button variant="default_light" size="sm" asChild>
-                <Link href={`/schedules`}>
+                <Link href={`/cr/schedules`}>
                     <ArrowLeft />
                     Go Back
                 </Link>
             </Button>
         </div>
-        <StoreInitializer timetableData={timetableData as TimeTableWithID} isEditing={false} />
-        <TimeTable
-            // timetableData={timetableData}
-            mode="view" />
+        <StoreInitializer timetableData={useTimetableStore.getInitialState().timetableData} isEditing={false} />
+        <TimeTable 
+            // timetableData={useTimetableStore.getInitialState().timetableData} 
+            mode="edit"
+            saveTimetable={updateTimeTable.bind(null, timetableData._id!)}
+        />
     </>)
 }

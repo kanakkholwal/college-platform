@@ -19,14 +19,14 @@ import { useTimetableStore } from "./time-table-store";
 export type FormattedTimetable = TimeTableWithID | RawTimetable;
 
 export type TimetableProps = {
-    timetableData: FormattedTimetable;
+    // timetableData: FormattedTimetable;
     mode?: "view" | "edit";
-    saveTimetable?: (timetableData: FormattedTimetable) => Promise<string>;
+    saveTimetable?: (timetableData: TimeTableWithID | RawTimetable) => Promise<string>;
 }
 
 
 
-export function TimeTable({ timetableData, mode = "view", saveTimetable }: TimetableProps) {
+export function TimeTable({ mode = "view", saveTimetable }: TimetableProps) {
 
     const { timetableData: stateTimetableData, isEditing } = useTimetableStore((state) => ({ timetableData: state.timetableData, isEditing: state.isEditing }));
 
@@ -34,7 +34,9 @@ export function TimeTable({ timetableData, mode = "view", saveTimetable }: Timet
         if (mode === "edit" && stateTimetableData) {
             if (saveTimetable && typeof saveTimetable === "function") {
                 useTimetableStore.setState({ isEditing: false });
-                toast.promise(saveTimetable(stateTimetableData), {
+                toast.promise(saveTimetable(
+                    mode === "edit" ? stateTimetableData as TimeTableWithID : stateTimetableData as RawTimetable
+                ), {
                     loading: "Saving Timetable",
                     success: "Timetable saved successfully",
                     error: "Failed to save timetable"
