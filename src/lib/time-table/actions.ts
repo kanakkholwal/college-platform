@@ -2,9 +2,9 @@
 
 import { getSession } from "src/lib/auth";
 import dbConnect from "src/lib/dbConnect";
-import Timetable, { ITimetable, RawTimetable, TimeTableWithID } from 'src/models/time-table';
+import Timetable, { RawTimetable, TimeTableWithID } from 'src/models/time-table';
 
-export async function getTimeTable(department_code: string, year: number, semester: number):Promise<TimeTableWithID> {
+export async function getTimeTable(department_code: string, year: number, semester: number):Promise<Partial<TimeTableWithID>> {
 
     try {
         await dbConnect();
@@ -13,7 +13,7 @@ export async function getTimeTable(department_code: string, year: number, semest
             department_code: department_code,
             year: year,
             semester: semester
-        });
+        }).select("-author").exec();
 
         if (!timetable) {
             return Promise.reject("Timetable not found");
@@ -119,7 +119,7 @@ export async function deleteTimeTable(timetableId: string) {
         return Promise.reject('Failed to delete timetable');
     }
 }
-export async function updateTimeTable(timetableId: string, updatedTimetableData: ITimetable) {
+export async function updateTimeTable(timetableId: string, timetableData: Partial<TimeTableWithID>) {
     const session = await getSession();
 
     if (!session) {
@@ -140,11 +140,11 @@ export async function updateTimeTable(timetableId: string, updatedTimetableData:
         }
 
         // Update the timetable fields
-        timetable.department_code = updatedTimetableData.department_code;
-        timetable.sectionName = updatedTimetableData.sectionName;
-        timetable.year = updatedTimetableData.year;
-        timetable.semester = updatedTimetableData.semester;
-        timetable.schedule = updatedTimetableData.schedule;
+        timetable.department_code = timetableData.department_code;
+        timetable.sectionName = timetableData.sectionName;
+        timetable.year = timetableData.year;
+        timetable.semester = timetableData.semester;
+        timetable.schedule = timetableData.schedule;
 
         // Save the updated timetable
         await timetable.save();

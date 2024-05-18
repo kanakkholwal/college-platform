@@ -4,6 +4,10 @@ import Link from "next/link";
 import { PollType } from 'src/models/poll';
 import { sessionType } from "src/types/session";
 import DeletePoll from "./delete-poll";
+import { ClosingBadge } from './poll-timer';
+
+
+
 
 export default function PollComponent({ poll, user }: { poll: PollType, user?: sessionType["user"] }) {
 
@@ -13,13 +17,12 @@ export default function PollComponent({ poll, user }: { poll: PollType, user?: s
         <div className="bg-white/10 p-4 rounded-lg mt-2 flex flex-col justify-between items-stretch gap-3 border border-gray-50/40 hover:shadow-sm">
             <div className="flex justify-between items-center gap-3 w-full">
                 <h3 className="text-lg font-semibold">{poll.question}</h3>
-                <Badge size="sm" variant="warning">
-                    Closes at: {new Date(poll.closesAt).toLocaleTimeString()}
-                </Badge>
             </div>
             <p className="text-sm">{poll.description}</p>
             <PollRender poll={poll} />
-            <div className="w-full flex items-center justify-end gap-2">
+            <div className="w-full flex items-center gap-2">
+                <ClosingBadge poll={poll} />
+
                 {user?._id === poll.createdBy && <DeletePoll pollId={poll._id} />}
                 <Badge variant="info_light">
                     {poll.votes.length} votes
