@@ -28,10 +28,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const session = await getSession() as sessionType | null;
   const headerList = headers();
   const pathname = headerList.get("x-current-path") as string;
+  const redirectUrl = new URL(pathname);
   const authorized = !!session?.user;
 
-  if (!authorized && pathname !== "/login") {
-    const redirectUrl = new URL(pathname);
+  if (!authorized && redirectUrl.pathname !== "/login") {
     if (redirectUrl.pathname !== "/login" && redirectUrl.pathname !== "/") {
       redirectUrl.searchParams.set("redirect", pathname);
       return redirect("/login?" + redirectUrl.searchParams.toString());
