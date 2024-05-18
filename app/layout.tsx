@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
   if (!authorized && pathname !== "/login") {
     const redirectUrl = new URL(pathname);
-    if (pathname !== "/login" && pathname !== "/") {
+    if (redirectUrl.pathname !== "/login" && redirectUrl.pathname !== "/") {
       redirectUrl.searchParams.set("redirect", pathname);
       return redirect("/login?" + redirectUrl.searchParams.toString());
     } else {
