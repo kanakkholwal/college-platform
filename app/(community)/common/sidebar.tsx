@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { ArrowRight, ArrowUpRight, AudioLines } from "lucide-react";
 import Link from "next/link";
@@ -5,8 +7,9 @@ import { GrAnnounce } from "react-icons/gr";
 import { LuSearch } from "react-icons/lu";
 import { MdOutlinePoll } from "react-icons/md";
 import { TbHome } from "react-icons/tb";
+import { useClientStore } from "./client-store";
 
-const sidenav_links = [
+export const sidenav_links = [
     {
         title: "Home",
         href: "/",
@@ -33,21 +36,25 @@ const sidenav_links = [
     //     Icon: ArrowRight,
     // },
 ];
-
-
 export default function Sidebar() {
+    const isSidebarOpen = useClientStore((state) => state.isSidebarOpen);
 
     return (<aside className={cn(
-        "flex flex-col items-start w-64 h-full rounded-lg p-4 bg-white/20  border-r border-gray-300/30",
-        " lg:sticky lg:top-0 lg:left-0",
+        "hidden lg:flex flex-col items-start w-64 h-full rounded-lg p-4 bg-white/20 backdrop-blur-3xl border-r border-gray-300/30",
+        "lg:sticky lg:top-24 lg:left-0 lg:bottom-auto lg:translate-x-0 transition-all",
     )}>
+        <SidebarContent />
+    </aside>)
+}
+export function SidebarContent() {
+    return <>
+    
         {/* <h3 className="text-xl font-bold">Community</h3> */}
         <button
             className={cn(
                 "group rounded-lg w-full flex justify-start items-center gap-2 p-2 animate-in popup  transition-colors ",
                 "text-sm font-semibold whitespace-nowrap border border-transparent backdrop-blur-2xl bg-white/30 hover:border-primary/50 hover:shadow text-gray-700 hover:text-primary",
-            )}
-        >
+            )}>
             <LuSearch className="w-5 h-5" />
             Search Community
         </button>
@@ -56,8 +63,11 @@ export default function Sidebar() {
                 animationDelay: `${index * 100}ms`,
             }} />)}
         </div>
-    </aside>)
+
+    </>
 }
+
+
 interface SideLinkProps {
     link: {
         href: string;

@@ -1,9 +1,9 @@
 "use server";
 
+import { revalidatePath } from 'next/cache';
 import { getSession } from "src/lib/auth";
 import dbConnect from "src/lib/dbConnect";
 import Poll, { PollType, RawPollType } from 'src/models/poll';
-
 
 export async function createPoll(pollData:RawPollType) {
     const session = await getSession();
@@ -18,6 +18,7 @@ export async function createPoll(pollData:RawPollType) {
             createdBy: session.user._id,
         });
         await poll.save();
+        revalidatePath(`/polls`,'page')
         return Promise.resolve(JSON.parse(JSON.stringify(poll)));
     } catch (err) {
         console.error(err);
@@ -85,6 +86,34 @@ export async function voteOnPoll(pollId:string, optionId:string):Promise<PollTyp
     } catch (err) {
         console.error(err);
         return Promise.reject('Failed to vote on poll');
+    }
+}
+export async function updateVotes(pollId:string, voteData:PollType["votes"]) :Promise<PollType> {
+    try {
+        await dbConnect();
+        const poll = await Poll.findById(pollId);
+        if (!poll) {
+            return Promise.reject('Poll not found');
+        }
+        poll.votes = voteData;
+        await poll.save();
+        return Promise.resolve(JSON.parse(JSON.stringify(poll)));
+    }
+    catch (err) {
+        console.error(err);
+        return Promise.reject('Failed to update votes');
+    }
+
+}
+export async function deletePoll(pollId:string) :Promise<void> {
+    try {
+        await dbConnect();
+        await Poll.findByIdAndDelete(pollId);
+        revalidatePath(`/polls`,'page')
+        return Promise.resolve();
+    } catch (err) {
+        console.error(err);
+        return Promise.reject('Failed to delete poll');
     }
 }
 // For user

@@ -1,24 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer";
-import {
     Form,
     FormControl,
     FormDescription,
@@ -28,17 +10,16 @@ import {
     FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { Switch } from "@/components/ui/switch";
 import { useRefWithFocus } from "@/hooks/useRefWithFocus";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { createPoll } from "src/lib/poll/actions";
-import { useMediaQuery } from "usehooks-ts";
 import * as z from 'zod';
-
 
 
 
@@ -54,55 +35,24 @@ export const rawPollSchema = z.object({
 
 
 export default function CreatePoll() {
-    const [open, setOpen] = useState(false)
-    const isDesktop = useMediaQuery("(min-width: 768px)")
 
-    if (isDesktop) {
-        return (
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                    <Button variant="outline">Create New Poll</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Create New Poll</DialogTitle>
-                        <DialogDescription>
-                            Create a new poll here. Click save when you're done.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <PollForm />
-                </DialogContent>
-            </Dialog>
-        )
-    }
 
-    return (
-        <Drawer open={open} onOpenChange={setOpen}>
-            <DrawerTrigger asChild>
-                <Button variant="outline">Create New Poll</Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="text-left">
-                    <DrawerTitle>Create New Poll</DrawerTitle>
-                    <DrawerDescription>
-                        Create a new poll here. Click save when you're done.
-                    </DrawerDescription>
-                </DrawerHeader>
-                <PollForm className="px-4" />
-                <DrawerFooter className="pt-2">
-                    <DrawerClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
-    )
+    return <ResponsiveDialog
+        title="Create New Poll"
+        description="Create a new poll here. Click save when you're done."
+        btnProps={{
+            variant: "default_light",
+            children: "Create New Poll",
+            size:"sm"
+        }}
+        content={<PollForm />}
+    />
+
 }
 
 
 
 function PollForm({ className }: { className?: string }) {
-    const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof rawPollSchema>>({
         resolver: zodResolver(rawPollSchema),
@@ -111,17 +61,20 @@ function PollForm({ className }: { className?: string }) {
             description: "",
             options: ["", ""],
             multipleChoice: false,
+            closesAt: new Date(Date.now() + 6 * 60 * 60 * 1000), // Default to 6 hours from now
         },
     });
 
     async function onSubmit(values: z.infer<typeof rawPollSchema>) {
-        console.log('Form submitted with values:', values);    
-        setLoading(true);
+        console.log('Form submitted with values:', values);
+
         toast.promise(createPoll(values), {
             loading: "Creating poll...",
             success: "Poll created successfully",
             error: "Failed to create poll",
-        }).finally(() => setLoading(false))
+        }).finally(() => {
+            form.reset();
+        })
 
     }
 
@@ -185,7 +138,7 @@ function PollForm({ className }: { className?: string }) {
                                                 key={item}
                                                 className="flex flex-row space-x-3 space-y-0"
                                             >
-                                                <FormLabel className="size-8 rounded-md p-3 inline-flex justify-center items-center mb-0">
+                                                <FormLabel className="bg-slate-200 rounded-md p-3 inline-flex justify-center items-center mb-0">
                                                     {index + 1}
                                                 </FormLabel>
                                                 <FormControl>
@@ -222,6 +175,25 @@ function PollForm({ className }: { className?: string }) {
                 />
                 <FormField
                     control={form.control}
+                    name="closesAt"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Closes At</FormLabel>
+                            <FormControl>
+                                <Input type="datetime-local" {...field}
+                                    value={field.value.toISOString()}
+                                    onChange={(e) => {
+                                        const date = new Date(e.target.value);
+                                        form.setValue("closesAt", date);
+                                    }}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="multipleChoice"
                     render={({ field }) => (
                         <FormItem className="flex items-center space-x-2 justify-between">
@@ -234,10 +206,8 @@ function PollForm({ className }: { className?: string }) {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" disabled={form.formState.isSubmitting}
-                // onClick={() => form.handleSubmit(onSubmit)()}
-                >
-                    {loading ? "Creating Poll..." : "Create Poll"}
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting ? "Creating Poll..." : "Create Poll"}
                 </Button>
             </form>
         </Form>

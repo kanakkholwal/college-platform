@@ -1,5 +1,19 @@
 "use client";
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
+    Sheet,
+    SheetContent,
+    SheetTrigger
+} from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 import {
     Cloud,
@@ -14,24 +28,17 @@ import { BsInstagram } from "react-icons/bs";
 import { FiLinkedin } from "react-icons/fi";
 import { LuGithub } from "react-icons/lu";
 import { RiTwitterXFill } from "react-icons/ri";
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+import { SidebarContent } from "./sidebar";
 
 export default function Navbar() {
 
     return (
-        <>
+        <div className={cn(
+            "sticky marker:lg:static left-0 top-0 lg:mt-5 z-50 inset-inline-0 mx-auto w-full backdrop-blur-2xl  lg:bg-white/20 lg:dark:bg-zinc-800/30 border-gray-300/50 bg-gradient-to-b from-primary/5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit "
+        )}>
             <nav className={cn(
-                "fixed left-0 top-0 lg:mt-5 z-50 mx-auto inset-inline-0  w-full p-4 lg:py-2 backdrop-blur-2xl lg:static lg:rounded-xl lg:border border-b",
-                " flex items-center justify-between font-bold text-xl lg:bg-white/20 lg:dark:bg-zinc-800/30 border-gray-300/50 bg-gradient-to-b from-primary/5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit ")}>
+                "mx-auto w-full p-4 lg:py-2 lg:rounded-xl lg:border border-b border-slate-900/5",
+                " flex items-center justify-between font-bold text-xl ")}>
                 <Link href="/" className="relative bg-gradient-to-r from-primary to-sky-500 bg-clip-text text-transparent hover:from-sky-500 hover:to-primary lg:text-xl whitespace-nowrap">
                     {process.env.NEXT_PUBLIC_WEBSITE_NAME}
                 </Link>
@@ -54,7 +61,9 @@ export default function Navbar() {
                     <div className="border-r border-gray-300 dark:border-neutral-800 h-8" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="link" size="icon" rounded="full"><UserRound /></Button>
+                            <Button variant="link" size="icon" rounded="full">
+                                <UserRound />
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" side="bottom" align="end">
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -92,6 +101,33 @@ export default function Navbar() {
                     </DropdownMenu>
                 </div>
             </nav>
+            <div className="flex items-center p-4 border-b border-slate-900/10 lg:hidden dark:border-slate-50/[0.06] w-full">
 
-        </>)
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <button type="button" className="text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300">
+                            <span className="sr-only">Navigation</span>
+                            <svg width={24} height={24}>
+                                <path d="M5 6h14M5 12h14M5 18h14" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+                            </svg>
+                        </button>
+                    </SheetTrigger>
+                    <SheetContent className="pt-8">
+                        <SidebarContent />
+                    </SheetContent>
+                </Sheet>
+
+                {/* <ol className="ml-4 flex text-sm leading-6 whitespace-nowrap min-w-0">
+                    <li className="flex items-center">
+                    item 1
+                    <svg width={3} height={6} aria-hidden="true" className="mx-3 overflow-visible text-slate-400">
+                        <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    </li>
+                    <li className="font-semibold text-slate-900 truncate dark:text-slate-200">item 2</li>
+                </ol> */}
+            </div>
+
+
+        </div>)
 }
