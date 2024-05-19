@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
 import { Check, Copy } from 'lucide-react';
 import { Fira_Code } from 'next/font/google';
+import Image from 'next/image';
 import React from "react";
 import { Components, Options } from 'react-markdown';
-
 type NodeType = {
     type: string;
     value?: string;
@@ -76,13 +76,13 @@ export const defaultOptions: Options = {
         ol: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <ol {...props}>{children}</ol>,
         li: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <li {...props}>{children}</li>,
         a: ({ children, href, node, ...props }: { children: React.ReactNode; href?: string; node?: NodeType }) => (
-            <a href={href} className="text-blue-600 relative inline-block line-height-2 hover:before:block hover:before:w-full hover:before:h-2 hover:before:rounded hover:before:bg-white hover:before:absolute hover:before:bottom-negative-0.5 hover:before:left-0 hover:before:transition-transform-400 hover:before:transition-opacity-400 hover:before:opacity-0 mr-2" {...props}>
+            <a href={href} target="_blank" className="text-blue-600 relative inline-block line-height-2 hover:before:block hover:before:w-full hover:before:h-2 hover:before:rounded hover:before:bg-white hover:before:absolute hover:before:bottom-negative-0.5 hover:before:left-0 hover:before:transition-transform-400 hover:before:transition-opacity-400 hover:before:opacity-0 mr-2" {...props}>
                 {children}
             </a>
         ),
         blockquote: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <blockquote {...props}>{children}</blockquote>,
         hr: () => <hr className="my-4" />,
-        img: ({ src, alt, node, ...props }: { src?: string; alt?: string; node?: NodeType }) => <img src={src} alt={alt} className="w-full h-auto rounded-md" {...props} />,
+        img: ({ src, alt, node, ...props }: { src: string; alt?: string; node?: NodeType }) => <Image src={src} alt={alt ?? "Image"} width={720} height={480} className="w-full h-auto mx-auto max-w-4xl rounded-lg" {...props} />,
         table: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <table {...props}>{children}</table>,
         thead: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <thead {...props}>{children}</thead>,
         tbody: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <tbody {...props}>{children}</tbody>,

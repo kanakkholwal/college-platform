@@ -1,4 +1,5 @@
 
+"use server";
 import { revalidatePath } from 'next/cache';
 import { getSession } from "src/lib/auth";
 import dbConnect from "src/lib/dbConnect";

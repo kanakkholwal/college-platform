@@ -30,7 +30,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { LuSendHorizonal } from "react-icons/lu";
+import { VscSend } from "react-icons/vsc";
 import { createAnnouncement } from "src/lib/announcement/actions";
 import { rawAnnouncementSchema, RELATED_FOR_TYPES } from "src/models/announcement";
 import { z } from "zod";
@@ -175,7 +175,7 @@ export default function CreateAnnouncement() {
                 />
                 <Button type="submit" width="sm">
                     Submit 
-                    <LuSendHorizonal/>
+                    <VscSend/>
                 </Button>
             </form>
         </Form>
