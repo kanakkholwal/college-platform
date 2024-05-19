@@ -1,11 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { PollType } from 'src/models/poll';
 import { sessionType } from "src/types/session";
 import DeletePoll from "./delete-poll";
 import { ClosingBadge } from './poll-timer';
-
 
 
 
@@ -22,14 +22,16 @@ export default function PollComponent({ poll, user }: { poll: PollType, user?: s
             <PollRender poll={poll} />
             <div className="w-full flex items-center gap-2">
                 <ClosingBadge poll={poll} />
-
-                {user?._id === poll.createdBy && <DeletePoll pollId={poll._id} />}
                 <Badge variant="info_light">
                     {poll.votes.length} votes
                 </Badge>
-                {!closesAlready && (<Button variant="default_light" size="sm" asChild>
+            </div>
+            <div className="w-full flex items-center justify-end gap-2">
+                {user?._id === poll.createdBy && <DeletePoll pollId={poll._id} />}
+                {!closesAlready && (<Button variant="link" size="sm" asChild>
                     <Link href={`/polls/${poll._id}`}>
                         Vote
+                        <ArrowRight/>
                     </Link>
                 </Button>)}
 
@@ -58,7 +60,7 @@ export function PollRender({ poll }: { poll: PollType }) {
             {poll.options.map((option, index) => (
                 <div key={index} className="flex justify-end items-center h-8 mb-1.5">
                     <p className="whitespace-nowrap leading-none truncate text-sm font-semibold">
-                        {parseVotes(poll.votes, option).percent}%
+                        {parseVotes(poll.votes, option).percent.toFixed(2)}%
                     </p>
                 </div>
             ))}

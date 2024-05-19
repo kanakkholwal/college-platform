@@ -18,8 +18,8 @@ export async function createPoll(pollData:RawPollType) {
             createdBy: session.user._id,
         });
         await poll.save();
-        revalidatePath(`/polls`,'page')
-        return Promise.resolve(JSON.parse(JSON.stringify(poll)));
+        revalidatePath(`/polls`)
+        return Promise.resolve("Poll created successfully");
     } catch (err) {
         console.error(err);
         return Promise.reject('Failed to create poll');
@@ -97,6 +97,7 @@ export async function updateVotes(pollId:string, voteData:PollType["votes"]) :Pr
         }
         poll.votes = voteData;
         await poll.save();
+        revalidatePath(`/polls`)
         return Promise.resolve(JSON.parse(JSON.stringify(poll)));
     }
     catch (err) {
@@ -109,7 +110,7 @@ export async function deletePoll(pollId:string) :Promise<void> {
     try {
         await dbConnect();
         await Poll.findByIdAndDelete(pollId);
-        revalidatePath(`/polls`,'page')
+        revalidatePath(`/polls`)
         return Promise.resolve();
     } catch (err) {
         console.error(err);
