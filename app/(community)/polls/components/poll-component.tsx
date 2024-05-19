@@ -60,7 +60,7 @@ export function PollRender({ poll }: { poll: PollType }) {
             {poll.options.map((option, index) => (
                 <div key={index} className="flex justify-end items-center h-8 mb-1.5">
                     <p className="whitespace-nowrap leading-none truncate text-sm font-semibold">
-                        {parseVotes(poll.votes, option).percent}%
+                        {parseVotes(poll.votes, option).percent.toFixed(2)}%
                     </p>
                 </div>
             ))}

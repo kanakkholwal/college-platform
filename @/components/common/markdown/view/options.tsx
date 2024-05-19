@@ -82,7 +82,10 @@ export const defaultOptions: Options = {
         ),
         blockquote: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <blockquote {...props}>{children}</blockquote>,
         hr: () => <hr className="my-4" />,
-        img: ({ src, alt, node, ...props }: { src: string; alt?: string; node?: NodeType }) => <Image src={src} alt={alt ?? "Image"} width={720} height={480} className="w-full h-auto mx-auto max-w-4xl rounded-lg" {...props} />,
+        img: ({ src, alt, node, ...props }: { src: string; alt?: string; node?: NodeType }) => {
+            console.log("imgNode",node)
+            return <Image src={src} alt={alt ?? "Image"} width={720} height={480} className="w-full h-auto mx-auto max-w-4xl rounded-lg" {...props} />
+        },
         table: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <table {...props}>{children}</table>,
         thead: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <thead {...props}>{children}</thead>,
         tbody: ({ children, node, ...props }: { children: React.ReactNode; node?: NodeType }) => <tbody {...props}>{children}</tbody>,
