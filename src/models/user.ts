@@ -32,7 +32,7 @@ const userSchema = new Schema<IUserSchema>({
     phone: { type: Number, default: null },
     department: { type: String, required: true },
     roles: { type: [String], default: ['student'], enum: ['student', 'cr', 'faculty', 'hod',"moderator","admin"] }
-});
+},{timestamps: true});
 // Middleware to hash password before saving
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {

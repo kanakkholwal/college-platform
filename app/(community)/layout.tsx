@@ -7,7 +7,7 @@ import Sidebar from "./common/sidebar";
 export default async function CommunityLayout({ children }: { children: React.ReactNode }) {
 
     const session = await getSession() as sessionType;
-    const isStudent = session.user.roles.includes('student');
+    const isStudent = session?.user?.roles?.includes('student');
 
     if (!isStudent)
         return redirect(`/${session.user.roles[0]}`)

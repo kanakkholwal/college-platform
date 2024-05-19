@@ -12,9 +12,13 @@ export const ClosingBadge = ({ poll }: { poll: PollType }) => {
         const calculateRemainingTime = () => {
             const now = new Date();
             const closesAt = new Date(poll.closesAt);
-            const duration = intervalToDuration({ start: now, end: closesAt });
-            const formattedDuration = formatDuration(duration, { format: ['minutes', 'seconds'] });
-            setRemainingTime(formattedDuration);
+            if (closesAt > now) {
+                const duration = intervalToDuration({ start: now, end: closesAt });
+                const formattedDuration = formatDuration(duration, { format: ['minutes', 'seconds'] });
+                setRemainingTime(formattedDuration);
+            } else {
+                setRemainingTime('Closed');
+            }
         };
 
         calculateRemainingTime();
@@ -24,8 +28,8 @@ export const ClosingBadge = ({ poll }: { poll: PollType }) => {
     }, [poll.closesAt]);
 
     return (
-        <Badge size="sm" variant="warning" className="mr-auto">
-            Closing in: {remainingTime}
+        <Badge size="sm" variant="warning_light" className="mr-auto">
+            {remainingTime === 'Closed' ? 'Closed' : `Closing in: ${remainingTime}`}
         </Badge>
     );
 };

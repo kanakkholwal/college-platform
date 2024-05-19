@@ -8,6 +8,30 @@ import { getPollById, updateVotes } from "src/lib/poll/actions";
 import { sessionType } from "src/types/session";
 import { PollRender } from "../components/poll-component";
 import Polling from "./polling";
+
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: {
+    params: { pollId: string }
+}): Promise<Metadata> {
+    const poll = await getPollById(params.pollId);
+
+    if (!poll) return notFound();
+
+    return {
+        title: `${poll.question}`,
+        description: poll?.description?.substring(0, 160) + "...",
+        openGraph: {
+            type: 'website',
+            title: `${poll.question}`,
+            description: poll?.description?.substring(0, 160) + "...",
+            siteName: process.env.NEXTAUTH_URL,
+            url: `${process.env.NEXTAUTH_URL}/polls/${params.pollId}`,
+        }
+    };
+}
+
+
 interface Props {
     params: {
         pollId: string
