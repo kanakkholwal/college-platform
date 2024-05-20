@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, AudioLines, CalendarDays, Grid3X3 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, AudioLines, BookUser, CalendarDays, Grid3X3 } from "lucide-react";
 import Link from "next/link";
 import { GrAnnounce } from "react-icons/gr";
 import { LiaReadme } from "react-icons/lia";
@@ -26,6 +26,12 @@ const quick_links = [
     title: "Classroom Availability",
     description: "Check the availability of classrooms here.",
     Icon: SiGoogleclassroom
+  },
+  {
+    href: "/attendance",
+    title: "Attendance Manager",
+    description: "Manage your attendance here.",
+    Icon: BookUser
   },
   {
     href: "/schedules",

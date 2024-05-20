@@ -1,4 +1,4 @@
-
+import "server-only"
 import mongoose, { ConnectOptions, Mongoose } from "mongoose";
 
 
