@@ -21,7 +21,7 @@ export type PollType = Omit<RawPollType, 'votes'> & {
     createdBy: string,
 }
 
-
+// auto delete ttl after 1 week of closing
 
 const pollSchema = new mongoose.Schema({
     question: { type: String, required: true },
@@ -32,7 +32,7 @@ const pollSchema = new mongoose.Schema({
         option: { type: String, required: true },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     }],
-    closesAt: { type: Date, required: true, default: () => new Date(Date.now() + 6 * 60 * 60 * 1000) }, // Default to 6 hours from now
+    closesAt: { type: Date, required: true, default: () => new Date(Date.now() + 6 * 60 * 60 * 1000),index: { expires: '1w' }}, // Default to 6 hours from now
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
 

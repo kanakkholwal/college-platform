@@ -173,7 +173,7 @@ export default function CreateAnnouncement() {
                     )}
 
                 />
-                <Button type="submit" width="sm">
+                <Button type="submit" width="full">
                     Submit 
                     <VscSend/>
                 </Button>
