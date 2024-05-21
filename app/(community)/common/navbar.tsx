@@ -68,7 +68,18 @@ export default function Navbar() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" side="bottom" align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuLabel className="font-normal">
+                                    {/* <div className="flex flex-col space-y-1">
+                                        <p className="block md:hidden text-sm font-medium leading-none">{session.user.name}</p>
+                                        <p className="text-xs capitalize  leading-none text-primary md:font-medium ">
+                                            {session.user.type + " Account"}
+                                        </p>
+                                        <p className="text-xs leading-none text-muted-foreground ">
+                                            {session.user.email}
+                                        </p>
+
+                                    </div> */}
+                            </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                                 <DropdownMenuItem>

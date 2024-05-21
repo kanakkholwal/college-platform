@@ -46,7 +46,7 @@ const properties = [
 ] as const;
 
 const isBrowser = typeof window !== "undefined";
-// @ts-expect-error
+
 const isFirefox = isBrowser && window.mozInnerScreenX != null;
 
 export function getCaretPosition(element: HTMLTextAreaElement) {
