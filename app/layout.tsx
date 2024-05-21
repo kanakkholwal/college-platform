@@ -35,7 +35,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  manifest:  new URL('https://app.nith.eu.org/manifest.json'),
+  manifest: '/manifest.json',
 };
 
 export const dynamic = 'force-dynamic';

@@ -37,13 +37,14 @@ export default function AttendanceRecord({ record, style }: AttendanceRecordProp
             index="name"
             colors={['emerald', 'amber']}
             className="w-16 h-16"
+            
           />
         </div>
       </div>
       <p>
         Attendance: {record.attendance.filter((a) => a.isPresent).length}/{record.totalClasses}
       </p>
-      <div className="flex item-baseline w-full">
+      <div className="flex item-baseline w-full gap-2 justify-between">
         <p className="text-sm font-semibold text-gray-600">
           Status: {getAttendanceStatus(record)}
         </p>

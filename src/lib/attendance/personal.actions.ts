@@ -16,10 +16,10 @@ export async function createAttendanceRecord(attendanceRecordData: RawAttendance
         const attendanceRecord = new AttendanceRecord({
             ...attendanceRecordData,
             userId: session.user._id,
-            attendance: [],
+            attendance: [] 
         });
         await attendanceRecord.save();
-        revalidatePath(`/attendance`)
+        revalidatePath(`/attendance`,'page')
         return Promise.resolve("Attendance record created successfully");
     } catch (err) {
         console.error(err);
@@ -63,7 +63,7 @@ export async function updateAttendanceRecord(recordId:string,present: boolean) :
             isPresent: present,
         })
         await attendanceRecord.save();
-        revalidatePath(`/attendance`)
+        revalidatePath(`/attendance`,'page')
         return Promise.resolve("Attendance record updated successfully");
     } catch (err) {
         console.error(err);
@@ -86,7 +86,7 @@ export async function deleteAttendanceRecord(recordId:string) {
             return Promise.reject("Attendance record not found");
         }
         await attendanceRecord.delete();
-        revalidatePath(`/attendance`)
+        revalidatePath(`/attendance`,'page')
         return Promise.resolve("Attendance record deleted successfully");
     } catch (err) {
         console.error(err);
@@ -112,7 +112,7 @@ export async function forceUpdateAttendanceRecord(recordId:string,attendanceReco
             ...attendanceRecordData,
 
         });
-        revalidatePath(`/attendance`)
+        revalidatePath(`/attendance`,'page')
         return Promise.resolve("Attendance record updated successfully");
     } catch (err) {
         console.error(err);

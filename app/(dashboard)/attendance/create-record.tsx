@@ -68,7 +68,7 @@ export default function CreateAttendanceRecord() {
                             <FormMessage />
                         </FormItem>
                     )} />
-                <FormField
+                {/* <FormField
                     control={form.control}
                     name="totalClasses"
                     render={({ field }) => (
@@ -82,7 +82,7 @@ export default function CreateAttendanceRecord() {
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
-                    )} />
+                    )} /> */}
                 <Button type="submit" disabled={form.formState.isSubmitting} className="mx-auto">
                     {form.formState.isSubmitting ? 'Creating...' : 'Create Attendance Record'}
                 </Button>

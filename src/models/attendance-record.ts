@@ -4,7 +4,7 @@ import * as z from 'zod';
 export const rawAttendanceRecordSchema = z.object({
     subjectCode: z.string(),
     subjectName: z.string(),
-    totalClasses: z.coerce.number().positive(),
+    totalClasses: z.coerce.number().nonnegative(),
 });
 
 export type RawAttendanceRecord = z.infer<typeof rawAttendanceRecordSchema>;
