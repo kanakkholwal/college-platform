@@ -37,7 +37,7 @@ export default function AttendanceRecord({ record, style }: AttendanceRecordProp
             index="name"
             colors={['emerald', 'amber']}
             className="w-16 h-16"
-            
+
           />
         </div>
       </div>
@@ -45,8 +45,8 @@ export default function AttendanceRecord({ record, style }: AttendanceRecordProp
         Attendance: {record.attendance.filter((a) => a.isPresent).length}/{record.totalClasses}
       </p>
       <div className="flex item-baseline w-full gap-2 justify-between">
-        <p className="text-sm font-semibold text-gray-600">
-          Status: {getAttendanceStatus(record)}
+        <p className="text-sm font-semibold text-slate-700">
+          {getAttendanceStatus(record)}
         </p>
         <UpdateAttendanceRecord updateAttendanceRecord={updateAttendanceRecord.bind(null, record._id)} />
       </div>
@@ -62,18 +62,32 @@ const attendancePercentage = (record: AttendanceRecordWithId) => {
 
 
 const getAttendanceStatus = (record: AttendanceRecordWithId) => {
-  const percentage = attendancePercentage(record);
   const classesAttended = record.attendance.filter((a) => a.isPresent).length;
-  const remainingClasses = record.totalClasses - classesAttended;
-  const requiredAttendance = Math.round(record.totalClasses * (ATTENDANCE_CRITERIA / 100));
+  const totalClasses = record.totalClasses;
+  const requiredPercentage = ATTENDANCE_CRITERIA / 100;
 
-  if (percentage >= ATTENDANCE_CRITERIA) {
-    return `You are on track and cannot miss the next ${record.totalClasses - requiredAttendance
-      } class(es).`;
-  } else if (remainingClasses >= requiredAttendance - classesAttended) {
-    return `You are behind and need to attend the next ${requiredAttendance - classesAttended
-      } class(es) to get back on track.`;
+  if (totalClasses === 0) {
+    return "Start attending classes to get status";
+  }
+
+  const targetClasses = Math.ceil(totalClasses * requiredPercentage);
+  const attendanceShortfall = targetClasses - classesAttended;
+  const possibleFutureClasses = Math.ceil(attendanceShortfall / (1 - requiredPercentage));
+  const currentPercentage = attendancePercentage(record);
+
+  if (currentPercentage >= ATTENDANCE_CRITERIA) {
+    if (attendanceShortfall <= 0) {
+      return `On Track, You can't miss the next class.`;
+    } else if (attendanceShortfall === 1) {
+      return `On Track, You may leave the next class.`;
+    } else {
+      return `On Track, You may leave the next ${attendanceShortfall} classes.`;
+    }
   } else {
-    return `You are behind and cannot meet the attendance criteria for this subject.`;
+    if (possibleFutureClasses === 1) {
+      return "Attend next class to get back on track.";
+    } else {
+      return `Attend the next ${possibleFutureClasses} classes to get back on track.`;
+    }
   }
 };

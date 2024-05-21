@@ -83,7 +83,7 @@ export default function CreateAttendanceRecord() {
                             <FormMessage />
                         </FormItem>
                     )} /> */}
-                <Button type="submit" disabled={form.formState.isSubmitting} className="mx-auto">
+                <Button type="submit" width="full" disabled={form.formState.isSubmitting} className="mx-auto">
                     {form.formState.isSubmitting ? 'Creating...' : 'Create Attendance Record'}
                 </Button>
 

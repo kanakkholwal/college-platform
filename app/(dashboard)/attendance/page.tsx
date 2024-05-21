@@ -21,7 +21,7 @@ export default async function PersonalAttendanceManager() {
                 btnProps={{
                     variant: "default_light",
                     size: "sm",
-                    children: "Create Record"
+                    children: "Create Record",
                 }}
             />
         </div>
