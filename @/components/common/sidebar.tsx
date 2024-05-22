@@ -35,6 +35,8 @@ export const sidenav_links = [
     //     Icon: ArrowRight,
     // },
 ];
+export type SidenavLinkType = typeof sidenav_links[number];
+
 export default function Sidebar() {
 
     return (<aside className={cn(

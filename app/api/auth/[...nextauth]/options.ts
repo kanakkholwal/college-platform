@@ -120,7 +120,7 @@ export const authOptions: NextAuthOptions = {
             async profile(profile) {
                 try {
                     console.log(profile);
-                    if (profile.email.split("@")[1] !== "nith.ac.in" ) {
+                    if (profile.hd !== "nith.ac.in" ) {
                         return Promise.reject({
                             status: 401,
                             message: "Only NITH emails are allowed",
@@ -149,7 +149,6 @@ export const authOptions: NextAuthOptions = {
                             password: "google" + profile.sub,
                             roles: ["student"],
                             gender: null,
-                            phone: null,
                             department: result.branch,
                         });
                         await user.save();
