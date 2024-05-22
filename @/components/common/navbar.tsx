@@ -1,5 +1,19 @@
 "use client";
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
+    Sheet,
+    SheetContent,
+    SheetTrigger
+} from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 import {
     Cloud,
@@ -10,28 +24,32 @@ import {
 } from 'lucide-react';
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 import { BsInstagram } from "react-icons/bs";
 import { FiLinkedin } from "react-icons/fi";
 import { LuGithub } from "react-icons/lu";
 import { RiTwitterXFill } from "react-icons/ri";
+import { sessionType } from 'src/types/session';
+// import { SidebarContent } from "./sidebar";
+import Image from 'next/image';
+import { SidenavLinkType } from './sidebar';
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+interface NavbarProps {
+    user: sessionType['user'],
+    showBreadcrumbs?: boolean;
+    sidebarLinks?: SidenavLinkType[];
+}
 
-export default function Navbar() {
+export default function Navbar({ user, showBreadcrumbs = false, sidebarLinks }: NavbarProps) {
+    const pathname = usePathname();
 
     return (
-        <>
+        <div className={cn(
+            "sticky marker:lg:static left-0 top-0 lg:mt-5 z-50 inset-inline-0 mx-auto w-full lg:rounded-xl  lg:overflow-hidden backdrop-blur-2xl lg:bg-white/20 border-gray-300/50 bg-gradient-to-b from-primary/5 "
+        )}>
             <nav className={cn(
-                "fixed left-0 top-0 z-50 max-w-7xl mx-auto inset-inline-0 flex w-full items-center justify-between font-bold text-xl p-4 lg:py-2 backdrop-blur-2xl lg:static lg:rounded-xl lg:border border-b",
-                " lg:bg-white/20 lg:dark:bg-zinc-800/30 border-gray-300/50 bg-gradient-to-b from-primary/5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit ")}>
+                "mx-auto w-full p-4 lg:py-2  lg:border border-b border-slate-900/5",
+                "flex items-center justify-between font-bold text-xl")}>
                 <Link href="/" className="relative bg-gradient-to-r from-primary to-sky-500 bg-clip-text text-transparent hover:from-sky-500 hover:to-primary lg:text-xl whitespace-nowrap">
                     {process.env.NEXT_PUBLIC_WEBSITE_NAME}
                 </Link>
@@ -51,24 +69,36 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    <div className="border-r border-gray-300 dark:border-neutral-800 h-8" />
+                    <div className="border-r border-gray-300 dark:border-neutral-800 h-8 hidden lg:block" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="link" size="icon" rounded="full"><UserRound /></Button>
+                            <Button variant="link" size="icon" rounded="full" className={user.profilePicture !== null ? " p-0" : ""}>
+                                {user.profilePicture !== null ? <Image src={user.profilePicture} alt={user.firstName} width={40} height={40} className="size-8 rounded-full" /> : <UserRound />}
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" side="bottom" align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuLabel className="font-normal">
+                                <div className="flex flex-col space-y-1">
+                                    {/* <p className="block md:hidden text-sm font-medium leading-none">{user.firstName}</p> */}
+                                    <p className="text-xs capitalize leading-none text-primary md:font-medium ">
+                                        {user.firstName.toLowerCase() + " " + user.lastName?.toLowerCase()}
+                                    </p>
+                                    <p className="text-xs leading-none text-muted-foreground ">
+                                        {user.email}
+                                    </p>
+                                </div>
+                            </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <DropdownMenuItem>
-                                    <UserRound className="mr-2 h-4 w-4" />
-                                    <span>Profile</span>
-                                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-                                </DropdownMenuItem>
+                                {user.roles.includes("student") && (<DropdownMenuItem asChild>
+                                    <Link href={`/results/${user.rollNo}`}>
+                                        <UserRound className="mr-2 h-4 w-4" />
+                                        <span>Your Result</span>
+                                    </Link>
+                                </DropdownMenuItem>)}
                                 <DropdownMenuItem>
                                     <Settings className="mr-2 h-4 w-4" />
                                     <span>Settings</span>
-                                    {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
@@ -83,15 +113,45 @@ export default function Navbar() {
                                 </span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/", })} className='cursor-pointer'>
+                            <DropdownMenuItem onClick={() => signOut({ callbackUrl: pathname, })} className='cursor-pointer'>
                                 <LogOut className="mr-2 h-4 w-4" />
                                 <span>Log out</span>
-                                {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </nav>
+            {(!showBreadcrumbs && !sidebarLinks) ? null :
+                (<div className="flex items-center p-4 border-b border-slate-900/10 lg:hidden dark:border-slate-50/[0.06] w-full">
+                    {(sidebarLinks && sidebarLinks.length > 0) && (<Sheet>
+                        <SheetTrigger asChild>
+                            <button type="button" className="text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300">
+                                <span className="sr-only">Navigation</span>
+                                <svg width={24} height={24}>
+                                    <path d="M5 6h14M5 12h14M5 18h14" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+                                </svg>
+                            </button>
+                        </SheetTrigger>
+                        <SheetContent className="pt-12">
 
-        </>)
+                        </SheetContent>
+                    </Sheet>)}
+                    {showBreadcrumbs && (<ol className="ml-4 flex text-sm font-semibold leading-6 whitespace-nowrap min-w-0 capitalize">
+                        {/* {pathname.split("/").slice(1).join(" / ") || "Home"} */}
+                        {pathname.split("/").slice(1).map((item, index) => {
+                            return (
+                                <li key={index} className={cn("flex items-center text-slate-900 ", index !== 0 && "truncate")}>
+                                    {item}
+                                    {index !== pathname.split("/").length - 1 && (
+                                        <svg width={3} height={6} aria-hidden="true" className="mx-3 overflow-visible text-slate-600">
+                                            <path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                        </svg>
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ol>)}
+                </div>)}
+
+        </div>)
 }

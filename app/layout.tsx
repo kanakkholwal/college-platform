@@ -70,7 +70,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <head />
       <body
         className={cn(
-          "min-h-screen bg-background antialiased",
+          "min-h-screen antialiased",
           fontSans.variable
         )}
       >

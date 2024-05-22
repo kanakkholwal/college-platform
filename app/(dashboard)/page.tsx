@@ -64,14 +64,14 @@ export default async function Dashboard() {
 
   return (
     <>
-      <section id="hero" className="z-10 w-full max-w-6xl relative flex flex-col items-center justify-center  py-24 max-h-40 text-center">
+      <section id="hero" className="z-10 w-full max-w-7xl relative flex flex-col items-center justify-center  py-24 max-h-40 text-center">
         <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-100 whitespace-nowrap" data-aos="fade-up">
           Welcome back, <span className="text-primary">{session.user.firstName}</span>
         </h2>
         <p className="mt-4 text-lg text-neutral-700 dark:text-neutral-300">
         </p>
       </section>
-      <section id="quick-links" className="z-10 w-full max-w-6xl relative space-y-4 text-left">
+      <section id="quick-links" className="z-10 w-full max-w-6xl mx-auto relative space-y-4 text-left">
         <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100" data-aos="fade-right" data-aos-duration="500">
           Quick Links
         </h2>
