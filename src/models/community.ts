@@ -1,11 +1,10 @@
-// src/models/community-post.ts
 
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { DEPARTMENT_CODES } from 'src/constants/departments';
 import * as z from 'zod';
 
 export const CATEGORY_TYPES = ['academics', 'departmental', 'technology', 'design', 'fun', 'activities', 'others'] as const;
-export const SUB_CATEGORY_TYPES = [...DEPARTMENT_CODES] as const;
+export const SUB_CATEGORY_TYPES = new Array(DEPARTMENT_CODES) as const;
 
 export const rawCommunityPostSchema = z.object({
     title: z.string().min(5, "Title must be atleast 5 characters long."),
