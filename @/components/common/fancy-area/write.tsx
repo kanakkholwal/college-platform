@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import { BsMarkdown } from "react-icons/bs";
 
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea, TextareaProps } from "@/components/ui/textarea";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 // import {
 //   Command,
@@ -93,13 +93,13 @@ const listItems = [
 
 
 
-interface Props {
+interface Props extends TextareaProps{
   textValue: string;
   setTextValue: (value:string) => void;
   disabled?:boolean
 }
 
-export function Write({ textValue, setTextValue,disabled }: Props) {
+export function Write({ textValue, setTextValue,disabled,...props }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -216,12 +216,13 @@ export function Write({ textValue, setTextValue,disabled }: Props) {
         onChange={onTextValueChange}
         rows={5}
         disabled={disabled}
+        {...props}
       />
 
       <Sheet>
         <SheetTrigger asChild>
           <button className="text-sm text-muted-foreground prose-none mt-1">
-            <BsMarkdown className="text-gray-600 h-5 mr-2 inline-block" />
+            <BsMarkdown className="text-gray-700 h-4 w-5 mr-2 inline-block" />
             Supports markdown.
           </button>
         </SheetTrigger>
