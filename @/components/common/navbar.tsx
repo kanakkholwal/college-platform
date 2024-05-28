@@ -39,34 +39,57 @@ interface NavbarProps {
     showBreadcrumbs?: boolean;
     sidebarLinks?: SidenavLinkType[];
 }
+interface SocialLink {
+    href: string;
+    icon: React.ElementType
+}
+const socials: SocialLink[] = [
+    {
+        href: "https://x.com/kanakkholwal",
+        icon: RiTwitterXFill,
+    },
+    {
+        href: "https://linkedin.com/in/kanak-kholwal",
+        icon: FiLinkedin,
+    },
+    {
+        href: "https://github.com/kanakkholwal",
+        icon: LuGithub,
+    },
+    {
+        href: "https://instagram.com/kanakkholwal",
+        icon: BsInstagram,
+    }
+]
 
 export default function Navbar({ user, showBreadcrumbs = false, sidebarLinks }: NavbarProps) {
     const pathname = usePathname();
 
     return (
         <div className={cn(
-            "sticky marker:lg:static left-0 top-0 lg:mt-5 z-50 inset-inline-0 mx-auto w-full lg:rounded-xl  lg:overflow-hidden backdrop-blur-2xl lg:bg-white/20 border-gray-300/50 bg-gradient-to-b from-primary/5 "
+            "sticky marker:lg:static left-0 top-0 lg:mt-5 z-50 inset-inline-0 mx-auto w-full lg:rounded-xl lg:overflow-hidden backdrop-blur-2xl lg:bg-white/20 border-gray-300/50 bg-gradient-to-b from-primary/5 "
         )}>
             <nav className={cn(
-                "mx-auto w-full p-4 lg:py-2  lg:border border-b border-slate-900/5",
+                "mx-auto w-full p-4 lg:py-2 lg:border border-b border-slate-900/5",
                 "flex items-center justify-between font-bold text-xl")}>
                 <Link href="/" className="relative bg-gradient-to-r from-primary to-sky-500 bg-clip-text text-transparent hover:from-sky-500 hover:to-primary lg:text-xl whitespace-nowrap">
                     {process.env.NEXT_PUBLIC_WEBSITE_NAME}
                 </Link>
                 <div className="flex items-center gap-5">
                     <div className="items-center gap-5 hidden sm:inline-flex">
-                        <Link href="https://x.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1 ease-in duration-300 flex justify-center items-center h-8 icon"}>
-                            <RiTwitterXFill className="w-5 h-5" />
-                        </Link>
-                        <Link href="https://linkedin.com/in/kanak-kholwal" className={" hover:text-primary hover:-translate-y-1 ease-in duration-300 flex justify-center items-center h-8 icon"}>
-                            <FiLinkedin className="w-5 h-5" />
-                        </Link>
-                        <Link href="https://github.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1  ease-in duration-300 flex justify-center items-center h-16 icon"}>
-                            <LuGithub className="w-5 h-5" />
-                        </Link>
-                        <Link href="https://instagram.com/kanakkholwal" className={" hover:text-primary hover:-translate-y-1  ease-in duration-300 flex justify-center items-center h-16 icon"}>
-                            <BsInstagram className="w-5 h-5" />
-                        </Link>
+                        {socials.map((link, index) => {
+                            return (
+                                <Link
+                                    href={link.href}
+                                    target="_blank"
+                                    key={`socials_${index}`}
+                                    className="hover:text-primary hover:-translate-y-1 ease-in duration-300 flex justify-center items-center h-16 icon"
+                                >
+                                    <link.icon className="w-5 h-5" />
+                                </Link>
+                            );
+                        })}
+
                     </div>
 
                     <div className="border-r border-gray-300 dark:border-neutral-800 h-8 hidden lg:block" />
