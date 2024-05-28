@@ -4,7 +4,6 @@ import { sessionType } from "src/types/session";
 import CreateAnnouncement from "./form";
 
 export default async function Dashboard() {
-    const session = await getSession() as sessionType;
 
 
     return (<>

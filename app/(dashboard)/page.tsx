@@ -64,6 +64,7 @@ const quick_links = [
 
 export default async function Dashboard() {
   const session = await getSession() as sessionType;
+
   const quote = await getRandomQuote();
   const gif = await getRandomGif();
 
@@ -81,6 +82,9 @@ export default async function Dashboard() {
         </div>
         <div>
           <Image src={gif} width={600} height={600} alt="Random GIF" className="max-w-full h-auto max-h-60 w-fit mt-4 rounded-lg hidden lg:block" data-aos="fade-up" />
+          <p className="mt-4 text-xs text-gray-700 italic text-center hidden lg:block" data-aos="fade-up">
+            Random GIF
+          </p>
         </div>
         <BorderBeam />
       </section>

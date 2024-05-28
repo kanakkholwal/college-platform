@@ -30,7 +30,7 @@ export function FancyArea({ textValue, setTextValue,disabled }: FancyAreaProps) 
             <TabsContent value="preview">
                 <MarkdownView
                     className="w-full overflow-auto prose max-w-full dark:prose-invert prose-sm min-h-[159.5008px] px-1 border border-transparent prose-headings:font-cal"
-                >
+>
                     {textValue}
                 </MarkdownView>
             </TabsContent>
