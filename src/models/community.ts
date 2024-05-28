@@ -4,13 +4,13 @@ import { DEPARTMENT_CODES } from 'src/constants/departments';
 import * as z from 'zod';
 
 export const CATEGORY_TYPES = ['academics', 'departmental', 'technology', 'design', 'fun', 'activities', 'others'] as const;
-export const SUB_CATEGORY_TYPES = new Array(DEPARTMENT_CODES) as const;
+export const SUB_CATEGORY_TYPES: readonly string[] = DEPARTMENT_CODES;
 
 export const rawCommunityPostSchema = z.object({
     title: z.string().min(5, "Title must be atleast 5 characters long."),
     content: z.string().min(10, "Content must be atleast 10 characters long."),  // markdown
     category: z.enum(CATEGORY_TYPES),
-    subCategory: z.enum(SUB_CATEGORY_TYPES).optional().nullable(),
+    subCategory: z.enum(SUB_CATEGORY_TYPES as unknown as [typeof SUB_CATEGORY_TYPES[number], ...typeof SUB_CATEGORY_TYPES[number][]]).optional().nullable(),
 });
 export type RawCommunityPostType = z.infer<typeof rawCommunityPostSchema>;
 

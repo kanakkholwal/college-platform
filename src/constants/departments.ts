@@ -53,8 +53,8 @@ export const DEPARTMENTS_LIST = [
 ];
 
 
-export const DEPARTMENTS = DEPARTMENTS_LIST.map((dept) => dept.name);
-export const DEPARTMENT_CODES = DEPARTMENTS_LIST.map((dept) => dept.code);
+export const DEPARTMENTS: readonly string[] = DEPARTMENTS_LIST.map((dept) => dept.name);
+export const DEPARTMENT_CODES: readonly string[] = DEPARTMENTS_LIST.map((dept) => dept.code);
 
 export const getDepartmentName = (code: string) => {
     const department = DEPARTMENTS_LIST.find((dept) => dept.code === code);
