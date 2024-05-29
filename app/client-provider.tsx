@@ -1,5 +1,6 @@
 // provider.tsx
 "use client";
+import useNotificationChecker from '@/hooks/useNotificationChecker';
 import Aos from 'aos';
 import "aos/dist/aos.css";
 import { SessionProvider } from "next-auth/react";
@@ -16,6 +17,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
 
 export function Provider({ children }: { children: React.ReactNode }) {
+    useNotificationChecker();
 
     useEffect(() => {
         Aos.init({

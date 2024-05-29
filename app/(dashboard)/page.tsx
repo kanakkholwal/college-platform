@@ -74,7 +74,7 @@ export default async function Dashboard() {
       <section id="hero" className="z-10 w-full max-w-7xl max-h-96 relative flex justify-center lg:justify-around items-center py-24 px-4 rounded-lg text-center lg:text-left">
         <div>
           <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-neutral-900  whitespace-nowrap" data-aos="fade-up">
-            {getGreeting()} <span className="text-primary">{session.user.firstName}</span>
+            {getGreeting()} <span className="text-primary">{session?.user?.firstName}</span>
           </h2>
           <p className="mt-4 text-lg text-gray-700" data-aos="fade-up">
             {quote.content} <br />  <span className="text-gray-600 italic"> - {quote.author}</span>
