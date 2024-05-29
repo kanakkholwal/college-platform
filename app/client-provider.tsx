@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import { Toaster as HotToaster } from "react-hot-toast";
 import { Gradient } from "whatamesh";
 
+import { Button, ButtonProps } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }
@@ -40,4 +42,14 @@ export function Provider({ children }: { children: React.ReactNode }) {
             }}
         />
     </SessionProvider>;
+}
+
+export function GoBackButton(props:ButtonProps) {
+
+    return (
+        <Button rounded="full" variant="default_light" width="sm" size="lg" {...props}>
+            <ArrowLeft/>
+            Go Back
+    </Button>
+    )
 }

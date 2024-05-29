@@ -13,6 +13,8 @@ export interface IUser {
     phone?: string | null
     department: typeof DEPARTMENTS[number];
     roles: string[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 export interface IUserSchema extends IUser, Document {
     password: string;
@@ -33,7 +35,9 @@ const userSchema = new Schema<IUserSchema>({
     profilePicture: { type: String, default: null },
     phone: { type: Number, default: null },
     department: { type: String, required: true, enum: DEPARTMENTS },
-    roles: { type: [String], default: ['student'], enum: ['student', 'cr', 'faculty', 'hod', "moderator", "admin"] }
+    roles: { type: [String], default: ['student'], enum: ['student', 'cr', 'faculty', 'hod', "moderator", "admin"] },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
 }, { timestamps: true });
 // Middleware to hash password before saving
 userSchema.pre('save', async function (next) {
