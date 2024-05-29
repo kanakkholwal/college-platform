@@ -1,8 +1,10 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { Metadata } from "next";
 import Link from "next/link";
+import {GoBackButton} from "./client-provider";
+
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
@@ -36,9 +38,10 @@ export default async function NotFound() {
                     </linearGradient>
                 </defs></svg>
             <div className="flex mx-auto gap-4">
+                <GoBackButton/>
                 <Button rounded="full" variant="default_light" width="sm" size="lg" asChild>
                     <Link href="/">
-                        <ArrowLeft/>
+                        <Home/>
                         Go to Home
                     </Link>
                 </Button>

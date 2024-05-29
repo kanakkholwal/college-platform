@@ -16,12 +16,13 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 import {
+    Bug,
     Cloud,
     Eye,
     LogOut,
-    Settings,
     UserRound
 } from 'lucide-react';
+
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
@@ -119,9 +120,11 @@ export default function Navbar({ user, showBreadcrumbs = false, sidebarLinks }: 
                                         <span>Your Result</span>
                                     </Link>
                                 </DropdownMenuItem>)}
-                                <DropdownMenuItem>
-                                    <Settings className="mr-2 h-4 w-4" />
-                                    <span>Settings</span>
+                                <DropdownMenuItem asChild>
+                                    <Link href={`https://github.com/kanakkholwal/college-platform/issues`} target="_blank">
+                                        <Bug className="mr-2 h-4 w-4" />
+                                        <span>Report an issue</span>
+                                    </Link>
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
@@ -132,7 +135,7 @@ export default function Navbar({ user, showBreadcrumbs = false, sidebarLinks }: 
                             <DropdownMenuItem disabled>
                                 <Eye className="mr-2 h-4 w-4" />
                                 <span>
-                                    <img src="https://visitor-badge.laobi.icu/badge?page_id=nith_portal.visitor-badge" alt="Visitor counter" className="inline-block font-inherit" />
+                                    <img src="https://visitor-badge.laobi.icu/badge?page_id=nith_portal.visitor-badge" alt="Visitor counter" className="inline-block font-inherit h-4" />
                                 </span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
