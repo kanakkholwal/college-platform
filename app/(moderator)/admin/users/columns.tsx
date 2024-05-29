@@ -30,7 +30,7 @@ export type userType = {
 
 
 export const columns: ColumnDef<userType>[] = [
-  {
+  // {
     // id: "select",
     // accessorKey: "select",
     // header: ({ table }) => (
@@ -43,16 +43,16 @@ export const columns: ColumnDef<userType>[] = [
     //     aria-label="Select all"
     //   />
     // ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     id: "firstName",
     accessorKey: "firstName",
