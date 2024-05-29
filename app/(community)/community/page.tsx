@@ -1,41 +1,21 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { DEPARTMENTS_LIST } from "src/constants/departments";
-import { getSession } from "src/lib/auth";
-import { sessionType } from "src/types/session";
+import { CATEGORY_TYPES } from "src/models/community";
 
 export default async function Dashboard() {
-    const session = await getSession() as sessionType;
 
     return (
-        <>
-            {/* <section id="hero" className="z-10 w-full max-w-6xl relative flex flex-col items-center justify-center  py-24 max-h-80 text-center">
-                <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-100 whitespace-nowrap" data-aos="fade-up">
-                    Welcome back, <span className="text-primary">{session.user.firstName}</span>
-                </h2>
-                <p className="mt-4 text-lg text-neutral-700 dark:text-neutral-300">
-                </p>
-            </section> */}
-
-            <Tabs defaultValue="departments" className="w-full">
-                <TabsList className="w-full h-14 px-2">
-                    <TabsTrigger value="departments" className="text-md w-full">Departments</TabsTrigger>
-                    <TabsTrigger value="technology" className="text-md w-full">Technology</TabsTrigger>
-                </TabsList>
-                <TabsContent value="departments">
-                    {DEPARTMENTS_LIST.map((dept, index) => {
-                        return <Link href={`/community/department/${dept.code}`} key={`dept_${index}`} className="block w-full p-4 border-b">
-                            {dept.name}
-                        </Link>
-                    })}
-                </TabsContent>
-                <TabsContent value="technology">
-                    <Link href="/community/technology" className="block w-full p-4 border-b">
-                        Technology
-                    </Link>
-                </TabsContent>
-            </Tabs>
-
-        </>
+        <div className="grid grid-cols-1 @md:grid-cols-2 @4xl:grid-cols-4 place-items-center rounded-md bg-muted text-muted-foreground w-full p-2">
+            {CATEGORY_TYPES.map((category) => {
+                return <Link href={`/community/${category}`}
+                    className={cn(
+                        "inline-flex items-center justify-center whitespace-nowrap rounded-sm p-4 font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-md w-full capitalize",
+                        "hover:bg-background/40 hover:text-gray-800 hover:shadow-sm"
+                    )}
+                    key={category}>
+                    {category}
+                </Link>
+            })}
+        </div>
     );
 }

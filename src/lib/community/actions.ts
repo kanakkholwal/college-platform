@@ -41,7 +41,7 @@ export async function getPostsByCategory(
     category: string,
     page: number,
     limit: number
-) {
+) :Promise<CommunityPostTypeWithId[]> {
     try {
         await dbConnect();
         const posts = await CommunityPost.find({ category })
@@ -56,10 +56,14 @@ export async function getPostsByCategory(
 }
 
 // Get a single post by ID
-export async function getPostById(id: string) {
+export async function getPostById(id: string,cached:boolean):Promise<CommunityPostTypeWithId>  {
     try {
         await dbConnect();
         const post = await CommunityPost.findById(id);
+        if(!cached){
+            post.views +=1;
+            await post.save();
+        }
         return Promise.resolve(JSON.parse(JSON.stringify(post)));
     } catch (err) {
         console.error(err);
