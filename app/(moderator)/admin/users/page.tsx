@@ -1,26 +1,34 @@
-import { DataTable } from "@/components/ui/data-table";
 
-import { Suspense } from "react";
-import { getSession } from "src/lib/auth";
-import { sessionType } from "src/types/session";
-import { getUsers } from './actions';
-import { columns } from "./columns";
+import { ErrorBoundaryWithSuspense } from '@/components/utils/error-boundary';
+import { getUsers } from 'src/lib/users/actions';
+import SearchBar from './search';
+import UserList from './userList';
 
+interface PageProps {
+    searchParams: {
+        query?: string;
+        offset?: number;
+    }
+}
 
+export default async function DashboardPage({ searchParams }: PageProps) {
 
-export default async function DashboardPage() {
-    const session = await getSession() as sessionType;
+    const offset = Number(searchParams.offset) || 1;
+    const query = searchParams.query || '';
 
+    const { users, hasMore } = await getUsers(query, offset, {});
 
-    const { users } = await getUsers('', 1, {});
-    console.log(users);
 
 
     return (<div className="space-y-6 my-5">
         <div className="container mx-auto py-10 px-2">
-            <Suspense fallback={<div>Loading...</div>}>
-                <DataTable columns={columns} data={users} />
-            </Suspense>
+            <SearchBar />
+            <ErrorBoundaryWithSuspense
+                fallback={<div className="text-center">Error fetching data</div>}
+                loadingFallback={<div className="text-center">Loading...</div>}
+            >
+                <UserList initialUsers={users} initialHasMore={hasMore} />
+            </ErrorBoundaryWithSuspense>
         </div>
 
 

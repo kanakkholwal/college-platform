@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     return (<>
         <div className="flex h-full min-h-screen selection:bg-primary/10 selection:text-primary dark:bg-neutral-900 bg-slate-200/80 z-0">
             <SideNav user={session.user} />
-            <div className="lg:pl-80 flex flex-col flex-1 w-full relative z-0">
+            <div className="xl:pl-80 flex flex-col flex-1 w-full relative z-0">
                 <Navbar user={session.user} />
                 <div aria-hidden="true" className="absolute inset-0 grid grid-cols-2 -space-x-52 opacity-40 dark:opacity-20 -z-[1]">
                     <div className="blur-[106px] h-56 bg-gradient-to-br from-primary to-purple-400 dark:from-blue-700" />

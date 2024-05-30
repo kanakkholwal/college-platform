@@ -13,20 +13,12 @@ import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 import Link from "next/link"
 import toast from "react-hot-toast"
-import { deleteUser } from './actions'
+import { deleteUser } from 'src/lib/users/actions'
+import { UserWithId } from "src/models/user"
 
 
 
-export type userType = {
-  _id: string,
-  firstName: string,
-  lastName: string,
-  rollNo: string,
-  email: string,
-  roles: string[]
-  createdAt: string,
-  department: string,
-}
+export type userType = Pick<UserWithId, "_id" | "firstName" | "lastName" | "email" | "roles" | "department" | "createdAt" | "rollNo">
 
 
 export const columns: ColumnDef<userType>[] = [
@@ -103,7 +95,7 @@ export const columns: ColumnDef<userType>[] = [
 
       return <div className="text-left font-medium">
         {user.roles?.map((role: string) => {
-          return <Badge key={role} variant="default_light" className="ml-2">{role}</Badge>
+          return <Badge key={role} variant="default_light" className="m-1">{role}</Badge>
         })}
       </div>
     },
