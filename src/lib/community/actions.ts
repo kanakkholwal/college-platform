@@ -47,7 +47,8 @@ export async function getPostsByCategory(
         const posts = await CommunityPost.find({ category })
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
-            .limit(limit);
+            .limit(limit)
+            .populate("author", "name email rollNo");
         return Promise.resolve(JSON.parse(JSON.stringify(posts)));
     } catch (err) {
         console.error(err);
@@ -59,7 +60,8 @@ export async function getPostsByCategory(
 export async function getPostById(id: string,cached:boolean):Promise<CommunityPostTypeWithId>  {
     try {
         await dbConnect();
-        const post = await CommunityPost.findById(id);
+        const post = await CommunityPost.findById(id)
+        .populate("author", "name email rollNo");
         if(!cached){
             post.views +=1;
             await post.save();

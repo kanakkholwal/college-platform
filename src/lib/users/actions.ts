@@ -87,9 +87,7 @@ export async function getUsers(query: string, skip: number, filter: {
         .exec();
     const hasMore = users.length === resultsPerPage;
 
-    console.log("users", users);
-    const response = { users: JSON.parse(JSON.stringify(users)), hasMore }
-    return Promise.resolve(response);
+    return Promise.resolve({ users: JSON.parse(JSON.stringify(users)), hasMore });
 }
 
 
