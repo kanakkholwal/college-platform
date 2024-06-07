@@ -97,7 +97,7 @@ export default function Navbar({ user, showBreadcrumbs = false, sidebarLinks }: 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="link" size="icon" rounded="full" className={user.profilePicture !== null ? " p-0" : ""}>
-                                {user.profilePicture !== null ? <Image src={user.profilePicture} alt={user.firstName} width={40} height={40} className="size-8 rounded-full" /> : <UserRound />}
+                                {user.profilePicture !== null ? <Image src={user.profilePicture!} alt={user.firstName!} width={40} height={40} className="size-8 rounded-full" /> : <UserRound />}
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" side="bottom" align="end">
@@ -105,7 +105,7 @@ export default function Navbar({ user, showBreadcrumbs = false, sidebarLinks }: 
                                 <div className="flex flex-col space-y-1">
                                     {/* <p className="block md:hidden text-sm font-medium leading-none">{user.firstName}</p> */}
                                     <p className="text-xs capitalize leading-none text-primary md:font-medium ">
-                                        {user.firstName.toLowerCase() + " " + user.lastName?.toLowerCase()}
+                                        {user.firstName!.toLowerCase() + " " + user.lastName?.toLowerCase()}
                                     </p>
                                     <p className="text-xs leading-none text-muted-foreground ">
                                         {user.email}
@@ -114,7 +114,7 @@ export default function Navbar({ user, showBreadcrumbs = false, sidebarLinks }: 
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                {user.roles.includes("student") && (<DropdownMenuItem asChild>
+                                {user.roles!.includes("student") && (<DropdownMenuItem asChild>
                                     <Link href={`/results/${user.rollNo}`}>
                                         <UserRound className="mr-2 h-4 w-4" />
                                         <span>Your Result</span>
