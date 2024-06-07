@@ -38,13 +38,20 @@ const userSchema = new Schema<IUserSchema>({
     phone: { type: Number, default: null },
     department: { type: String, required: true, enum: DEPARTMENTS },
     roles: { type: [String], default: ['student'], enum: ['student', 'cr', 'faculty', 'hod', "moderator", "admin"] },
-    createdAt: { type: Date, default: () => Date.now() },
-    updatedAt: { type: Date, default: () => Date.now() },
+    createdAt: { type: Date},
+    updatedAt: { type: Date},
 }, { timestamps: true });
 // Middleware to hash password before saving
 userSchema.pre('save', async function (next) {
-    this.updatedAt = new Date();
-    if (!this.isModified('password')) {
+    if (this.isNew) {
+        // If it's a new document, set both createdAt and updatedAt
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+    } else {
+        // If it's an existing document, only update the updatedAt field
+        this.updatedAt = new Date();
+    }
+        if (!this.isModified('password')) {
         return next();
     }
 

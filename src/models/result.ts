@@ -5,6 +5,12 @@ export interface Course {
     code: string;
     cgpi: number;
 }
+export interface Rank {
+    college: number;
+    batch: number;
+    branch: number;
+    class: number;
+}
 
 export interface Semester {
     sgpi: number;
@@ -14,20 +20,27 @@ export interface Semester {
     sgpi_total: number;
     cgpi_total: number;
 }
-
-export interface ResultType extends Document {
+export interface ResultTypeWithId {
+    _id: string;
     name: string;
     rollNo: string;
     branch: string;
     batch: number;
     programme: string;
     semesters: Semester[];
-    rank: {
-        college: number;
-        batch: number;
-        branch: number;
-        class: number;
-    };
+    rank: Rank;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface IResultType extends Document {
+    name: string;
+    rollNo: string;
+    branch: string;
+    batch: number;
+    programme: string;
+    semesters: Semester[];
+    rank: Rank;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -64,6 +77,6 @@ const ResultSchema: Schema = new Schema({
     timestamps: true
 });
 
-const ResultModel = mongoose.models.Result ||mongoose.model<ResultType>('Result', ResultSchema);
+const ResultModel = mongoose.models.Result ||mongoose.model<IResultType>('Result', ResultSchema);
 
 export default ResultModel;

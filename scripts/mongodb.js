@@ -42,7 +42,7 @@ async function initialize(sourceDB, targetDB) {
     sourceClient.close();
     targetClient.close();
 }
-initialize('main', 'production');
+// initialize('main', 'production');
 
 
 
