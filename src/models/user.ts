@@ -9,7 +9,7 @@ export type UserWithId = {
     lastName: string;
     rollNo: string;
     email: string;
-    profilePicture: string | null,
+    profilePicture: string,
     department: typeof DEPARTMENTS[number];
     roles: string[];
     createdAt: Date;

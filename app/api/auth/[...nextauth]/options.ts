@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import dbConnect from "src/lib/dbConnect";
 import ResultModel from "src/models/result";
 import UserModel from "src/models/user";
-import { sessionUserType } from "src/types/session";
 
 interface AuthEnv {
     GOOGLE_ID: string;
@@ -91,7 +90,7 @@ export const authOptions: NextAuthOptions = {
 
                         console.log("user found", user)
                         revalidatePath("/","layout")
-                        return resolve(user)
+                        return resolve(JSON.parse(JSON.stringify(user)))
 
                     }
                     catch (err) {
@@ -150,8 +149,8 @@ export const authOptions: NextAuthOptions = {
                         await user.save();
 
                         return Promise.resolve({
-                            _id: user._id.toString(),
                             id: user._id.toString(),
+                            _id: user._id.toString(),
                             firstName: user.firstName,
                             lastName: user.lastName,
                             rollNo: user.rollNo,
@@ -164,6 +163,7 @@ export const authOptions: NextAuthOptions = {
                     console.log("user found", userInDb)
 
                     return Promise.resolve({
+                        id: user._id.toString(),
                         _id: userInDb._id.toString(),
                         firstName: userInDb.firstName,
                         lastName: userInDb.lastName,
