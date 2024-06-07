@@ -163,7 +163,7 @@ export const authOptions: NextAuthOptions = {
                     console.log("user found", userInDb)
 
                     return Promise.resolve({
-                        id: user._id.toString(),
+                        id: userInDb._id.toString(),
                         _id: userInDb._id.toString(),
                         firstName: userInDb.firstName,
                         lastName: userInDb.lastName,
