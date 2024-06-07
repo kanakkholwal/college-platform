@@ -1,5 +1,5 @@
 
-import { Course, Semester } from "src/models/result";
+import { Course, ResultTypeWithId, Semester } from "src/models/result";
 
 import {
     Card,
@@ -9,11 +9,10 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import { ArrowDownUp, TrendingUp } from 'lucide-react';
-import { ResultType } from "src/models/result";
 
 
 export function CgpiCard({ result }: {
-    result: ResultType
+    result: ResultTypeWithId
 }) {
     const maxCgpi = result.semesters?.reduce((prev, curr) => Math.max(prev, curr.cgpi), 0);
     const minCgpi = result.semesters?.reduce((prev, curr) => Math.min(prev, curr.cgpi), 10);
@@ -50,7 +49,7 @@ export function CgpiCard({ result }: {
 
 }
 export function RankCard({ result }: {
-    result: ResultType
+    result: ResultTypeWithId
 }) {
 
     return <Card variant="glass" className="hover:shadow-lg animate-in popup ">
