@@ -78,19 +78,15 @@ export const authOptions: NextAuthOptions = {
                                 success: false
                             })
                         const user = {
-                            id: userInDb._id.toString(),
                             _id: userInDb._id.toString(),
                             firstName: userInDb.firstName,
                             lastName: userInDb.lastName,
                             rollNo: userInDb.rollNo,
-                            gender: userInDb.gender,
                             email: userInDb.email,
                             roles: userInDb.roles,
                             profilePicture: userInDb.profilePicture,
-                            phone: userInDb.phone,
                             department: userInDb.department,
-
-                        } satisfies sessionUserType
+                        }
 
 
                         console.log("user found", user)
@@ -117,9 +113,10 @@ export const authOptions: NextAuthOptions = {
                     response_type: "code"
                 }
             },
-            async profile(profile) {
+            async profile(profile,tokens) {
                 try {
                     console.log(profile);
+                    console.log(tokens);
                     if (profile.hd !== "nith.ac.in" ) {
                         return Promise.reject({
                             status: 401,
@@ -148,7 +145,6 @@ export const authOptions: NextAuthOptions = {
                             profilePicture: profile.picture,
                             password: "google" + profile.sub,
                             roles: ["student"],
-                            gender: null,
                             department: result.branch,
                         });
                         await user.save();
@@ -159,31 +155,24 @@ export const authOptions: NextAuthOptions = {
                             firstName: user.firstName,
                             lastName: user.lastName,
                             rollNo: user.rollNo,
-                            gender: user.gender,
                             email: user.email,
                             roles: user.roles,
                             profilePicture: user.profilePicture,
-                            phone: user.phone,
                             department: user.department,
                         });
                     }
                     console.log("user found", userInDb)
 
-
-
                     return Promise.resolve({
                         _id: userInDb._id.toString(),
-                        id: userInDb._id.toString(),
                         firstName: userInDb.firstName,
                         lastName: userInDb.lastName,
                         rollNo: userInDb.rollNo,
-                        gender: userInDb.gender,
                         email: userInDb.email,
                         roles: userInDb.roles,
                         profilePicture: userInDb.profilePicture,
-                        phone: userInDb.phone,
                         department: userInDb.department,
-                    } satisfies sessionUserType)
+                    })
                 }
                 catch (err) {
                     console.log(err);
