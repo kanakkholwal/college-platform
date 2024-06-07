@@ -1,19 +1,18 @@
 import { HfInference } from '@huggingface/inference';
-import { promises as fs } from 'fs';
 import { NextRequest, NextResponse } from "next/server";
-import { join } from 'path';
+
 
 export const runtime = "edge";
 
 //  read ./document.md file for context 
 const getContext = async () => {
-    const filePath = join(process.cwd(), 'document.md');
-    const file = await fs
-        .readFile(filePath, 'utf8')
-        .catch(() => {
-            throw new Error("Error reading file")
-        });
-    return file;
+    // const filePath = join(process.cwd(), 'document.md');
+    // const file = await fs
+    //     .readFile(filePath, 'utf8')
+    //     .catch(() => {
+    //         throw new Error("Error reading file")
+    //     });
+    return "file";
 }
 
 
