@@ -21,7 +21,7 @@ export interface IUser {
     lastName: string;
     rollNo: string;
     email: string;
-    profilePicture: string | null,
+    profilePicture: string,
     gender: "male" | "female" | null;
     phone?: string | null
     department: typeof DEPARTMENTS[number];
