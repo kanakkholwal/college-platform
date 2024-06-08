@@ -1,8 +1,12 @@
 const { MongoClient } = require('mongodb');
 
-// Connection URIs
-// const sourceURI = "mongodb+srv://<username>:<password>@<cluster>.<clusterId>.mongodb.net/testing";
-// const targetURI = "mongodb+srv://<username>:<password>@<cluster>.<clusterId>.mongodb.net/development";
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+
+if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable');
+}
 
 // Function to migrate data
 async function migrateData(sourceURI, targetURI, collectionName, sourceDB, targetDB) {
@@ -25,8 +29,12 @@ async function migrateData(sourceURI, targetURI, collectionName, sourceDB, targe
     targetClient.close();
 }
 async function initialize(sourceDB, targetDB) {
-    const sourceClient = await MongoClient.connect(sourceURI);
-    const targetClient = await MongoClient.connect(targetURI);
+    const sourceClient = await MongoClient.connect(`${MONGODB_URI} + "?retryWrites=true&w=majority&appName=nith"`,{
+        dbName: sourceDB,
+    });
+    const targetClient = await MongoClient.connect(`${MONGODB_URI} + "?retryWrites=true&w=majority&appName=nith"`,{
+        dbName: targetDB,
+    });
 
     console.log('Connected to source and target databases');
 

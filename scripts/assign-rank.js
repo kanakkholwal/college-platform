@@ -2,8 +2,16 @@ import mongoose from 'mongoose';
 import ResultModel from 'src/models/result';
 
 
-// const dbURI = "mongodb+srv://<username>:<password>@<cluster>.<clusterId>.mongodb.net/development";
 
+const MONGODB_URI = process.env.MONGODB_URI;
+
+
+if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable');
+}
+const opts = {
+    dbName,
+};
 
 // Function to update the rank based on the given criteria
 const updateRank = async (criteria, rankType) => {
@@ -34,8 +42,7 @@ const updateRank = async (criteria, rankType) => {
 // Function to update all ranks
 const updateAllRanks = async () => {
     try {
-        await mongoose.connect(dbURI, {
-        }).then(() => console.log('Connected to database'))
+        await mongoose.connect(`${MONGODB_URI} + "?retryWrites=true&w=majority&appName=nith"`, opts).then(() => console.log('Connected to database'))
             .catch((error) => console.error('Error connecting to database:', error.message));
 
         // Update college rank (based on the entire collection)

@@ -1,9 +1,7 @@
 "use server";
-import { authOptions } from "app/api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth/next";
-
 import dbConnect from "src/lib/dbConnect";
 import CourseModel, { CourseType, CourseTypeWithId } from "src/models/course";
+import { getSession } from "../auth";
 // Path: src/lib/course/actions.ts
 
 export async function getCourses(query: string, currentPage: number, filter: {
@@ -63,7 +61,7 @@ export async function createCourse(course: CourseType) {
     return JSON.parse(JSON.stringify(newCourse)) as CourseTypeWithId;
 }
 export async function updateCourseByCr(course:CourseTypeWithId) {
-    const session = await getServerSession(authOptions);
+    const session = await getSession();
     if (!session) {
         throw new Error("User not authenticated");
     }
@@ -95,7 +93,7 @@ export async function updatePrevPapersPublic(course: CourseTypeWithId) {
     return updatedCourse;
 }
 export async function deleteCourse(id: string) {
-    const session = await getServerSession(authOptions);
+    const session = await getSession()
     if (!session) {
         throw new Error("User not authenticated");
     }
