@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { ResultType } from "src/models/result";
+import { ResultTypeWithId } from "src/models/result";
 
-export function ResultCard({ result, ...props }: { result: ResultType } & React.ComponentProps<typeof Card>) {
+export function ResultCard({ result, ...props }: { result: ResultTypeWithId } & React.ComponentProps<typeof Card>) {
 
 
     return <Card variant="glass" className="hover:shadow-lg animate-in popup flex flex-col items-stretch justify-between " {...props}>

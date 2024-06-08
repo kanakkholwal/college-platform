@@ -3,19 +3,33 @@ import mongoose, { Document, Schema } from 'mongoose';
 import { DEPARTMENTS } from 'src/constants/departments';
 
 
+export type UserWithId = {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    rollNo: string;
+    email: string;
+    profilePicture: string,
+    department: typeof DEPARTMENTS[number];
+    roles: string[];
+    createdAt: Date;
+    updatedAt?: Date;
+};
+
 export interface IUser {
     firstName: string;
     lastName: string;
     rollNo: string;
     email: string;
-    profilePicture: string | null,
+    profilePicture: string,
     gender: "male" | "female" | null;
     phone?: string | null
     department: typeof DEPARTMENTS[number];
     roles: string[];
-    createdAt?: Date;
+    createdAt: Date;
     updatedAt?: Date;
 }
+
 export interface IUserSchema extends IUser, Document {
     password: string;
     comparePassword: (password: string) => Promise<boolean>;
@@ -36,11 +50,19 @@ const userSchema = new Schema<IUserSchema>({
     phone: { type: Number, default: null },
     department: { type: String, required: true, enum: DEPARTMENTS },
     roles: { type: [String], default: ['student'], enum: ['student', 'cr', 'faculty', 'hod', "moderator", "admin"] },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    createdAt: { type: Date },
+    updatedAt: { type: Date },
 }, { timestamps: true });
 // Middleware to hash password before saving
 userSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        // If it's a new document, set both createdAt and updatedAt
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+    } else {
+        // If it's an existing document, only update the updatedAt field
+        this.updatedAt = new Date();
+    }
     if (!this.isModified('password')) {
         return next();
     }

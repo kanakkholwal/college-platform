@@ -52,12 +52,17 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[],
     header?: React.ReactNode,
+    options?: {
+        toolbar?: boolean,
+        paginated?: boolean,
+    }
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
     header,
+    options
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -71,7 +76,9 @@ export function DataTable<TData, TValue>({
         columns,
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
+        ...(options?.paginated && {
+            getPaginationRowModel: getPaginationRowModel(),
+        }),
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
@@ -89,8 +96,7 @@ export function DataTable<TData, TValue>({
             <div className="flex items-center justify-between gap-2 flex-col md:flex-row">
                 {header}
             </div>
-            <DataTableToolbar table={table} />
-
+            {options?.toolbar && <DataTableToolbar table={table} />}
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
@@ -113,10 +119,11 @@ export function DataTable<TData, TValue>({
                     </TableHeader>
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
+                            table.getRowModel().rows.map((row, i) => (
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    className="animate-in popup"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
@@ -135,7 +142,7 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
-            <DataTablePagination table={table} />
+            {options?.paginated && <DataTablePagination table={table} />}
         </div>
     )
 }
@@ -194,6 +201,7 @@ export function DataTableColumnHeader<TData, TValue>({
 }
 interface DataTableToolbarProps<TData> {
     table: TableType<TData>
+
 }
 
 export function DataTableToolbar<TData>({
@@ -306,7 +314,7 @@ export function DataTablePagination<TData>({
                     value={`${table.getState().pagination.pageSize}`}
                     onValueChange={(value) => {
                         table.setPageSize(Number(value))
-                        router.push(`?page=${table.getPageCount()}&perPage=${value}`,{scroll:false})
+                        router.push(`?page=${table.getPageCount()}&perPage=${value}`, { scroll: false })
                     }}
                 >
                     <SelectTrigger className="h-8 w-[70px]">

@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import dbConnect from "src/lib/dbConnect";
 import ResultModel from "src/models/result";
 import UserModel from "src/models/user";
-import { sessionUserType } from "src/types/session";
 
 interface AuthEnv {
     GOOGLE_ID: string;
@@ -78,24 +77,20 @@ export const authOptions: NextAuthOptions = {
                                 success: false
                             })
                         const user = {
-                            id: userInDb._id.toString(),
                             _id: userInDb._id.toString(),
                             firstName: userInDb.firstName,
                             lastName: userInDb.lastName,
                             rollNo: userInDb.rollNo,
-                            gender: userInDb.gender,
                             email: userInDb.email,
                             roles: userInDb.roles,
                             profilePicture: userInDb.profilePicture,
-                            phone: userInDb.phone,
                             department: userInDb.department,
-
-                        } satisfies sessionUserType
+                        }
 
 
                         console.log("user found", user)
                         revalidatePath("/","layout")
-                        return resolve(user)
+                        return resolve(JSON.parse(JSON.stringify(user)))
 
                     }
                     catch (err) {
@@ -117,9 +112,10 @@ export const authOptions: NextAuthOptions = {
                     response_type: "code"
                 }
             },
-            async profile(profile) {
+            async profile(profile,tokens) {
                 try {
                     console.log(profile);
+                    console.log(tokens);
                     if (profile.hd !== "nith.ac.in" ) {
                         return Promise.reject({
                             status: 401,
@@ -148,42 +144,35 @@ export const authOptions: NextAuthOptions = {
                             profilePicture: profile.picture,
                             password: "google" + profile.sub,
                             roles: ["student"],
-                            gender: null,
                             department: result.branch,
                         });
                         await user.save();
 
                         return Promise.resolve({
-                            _id: user._id.toString(),
                             id: user._id.toString(),
+                            _id: user._id.toString(),
                             firstName: user.firstName,
                             lastName: user.lastName,
                             rollNo: user.rollNo,
-                            gender: user.gender,
                             email: user.email,
                             roles: user.roles,
                             profilePicture: user.profilePicture,
-                            phone: user.phone,
                             department: user.department,
                         });
                     }
                     console.log("user found", userInDb)
 
-
-
                     return Promise.resolve({
-                        _id: userInDb._id.toString(),
                         id: userInDb._id.toString(),
+                        _id: userInDb._id.toString(),
                         firstName: userInDb.firstName,
                         lastName: userInDb.lastName,
                         rollNo: userInDb.rollNo,
-                        gender: userInDb.gender,
                         email: userInDb.email,
                         roles: userInDb.roles,
                         profilePicture: userInDb.profilePicture,
-                        phone: userInDb.phone,
                         department: userInDb.department,
-                    } satisfies sessionUserType)
+                    })
                 }
                 catch (err) {
                     console.log(err);

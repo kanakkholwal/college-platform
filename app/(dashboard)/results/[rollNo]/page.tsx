@@ -4,14 +4,13 @@ import { LineChart } from '@tremor/react';
 import { Mail, Undo2 } from 'lucide-react';
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import dbConnect from "src/lib/dbConnect";
-import ResultModel, { Semester } from "src/models/result";
+import { ResultTypeWithId, Semester } from "src/models/result";
+import { getResultByRollNo } from "./actions";
 import { CgpiCard, RankCard, SemCard } from "./components/card";
+
 export default async function ResultsPage({ params }: { params: { rollNo: string } }) {
-    await dbConnect();
-    const result = await ResultModel.findOne({
-        rollNo: params.rollNo
-    }).exec();
+
+    const result = await getResultByRollNo(params.rollNo)
     if (!result) {
         return notFound()
     }
@@ -50,7 +49,7 @@ export default async function ResultsPage({ params }: { params: { rollNo: string
                 <div className="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6">
                     <div className="w-full flex flex-wrap items-center gap-4 text-sm mx-auto justify-center">
                         <span className={"bg-primary/10 text-primary py-1.5 px-3 rounded-md"}>
-                            {getYear(result.semesters)}
+                            {getYear(result)}
                         </span>
                         <span className={"bg-primary/10 text-primary py-1.5 px-3 rounded-md"}>
                             {result.branch}
@@ -65,10 +64,10 @@ export default async function ResultsPage({ params }: { params: { rollNo: string
 
             </div>
         </section>
-            <div className="max-w-6xl mx-auto px-6 md:px-12 xl:px-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
-                <RankCard result={result} />
-                <CgpiCard result={result} />
-            </div>
+        <div className="max-w-6xl mx-auto px-6 md:px-12 xl:px-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
+            <RankCard result={result} />
+            <CgpiCard result={result} />
+        </div>
         <div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mx-auto mt-24 mb-10">
                 Semester Wise Results
@@ -109,14 +108,29 @@ export default async function ResultsPage({ params }: { params: { rollNo: string
     </>)
 }
 
-function getYear(semesters: any[]): string | null {
+function getYear(result: ResultTypeWithId): string | null {
 
-    if (semesters.length === 1 || semesters.length === 2) return "First Year"
-    else if (semesters.length === 3 || semesters.length === 4) return "Second Year"
-    else if (semesters.length === 5 || semesters.length === 6) return "Third Year"
-    else if (semesters.length === 7 || semesters.length === 8) return "Final Year"
-    else if (semesters.length === 9 || semesters.length === 10) return "Super Final Year"
-    else
-        return null
+    switch (result.semesters.length) {
+        case 0:
+        case 1:
+            return "First Year"
+        case 2:
+        case 3:
+            return "Second Year"
+        case 4:
+        case 5:
+            return "Third Year"
+        case 6:
+        case 7:
+            return "Final Year"
+        case 8:
+            return result.programme === "B.Tech" ? "Pass Out" : "Super Final Year"
+        case 9:
+            return "Super Final Year"
+        case 10:
+            return "Pass Out"
+        default:
+            return "Unknown Year"
+    }
 
 }

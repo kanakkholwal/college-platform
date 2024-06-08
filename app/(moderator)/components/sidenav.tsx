@@ -60,11 +60,11 @@ export default function SideBar({ user }: { user: sessionType["user"] }) {
 
 
     return (<div aria-label="Sidenav"
-        className={"fixed top-0 left-0 bottom-0 z-50 flex flex-col w-80 min-h-screen space-y-6 glassmorphism " + (open ? " translate-x-0" : " -translate-x-full lg:translate-x-0") + " transition-transform duration-200 ease-in-out"}
+        className={"fixed top-0 left-0 bottom-0 z-50 flex flex-col w-80 min-h-screen space-y-6 bg-white/20 backdrop-blur-xl " + (open ? " translate-x-0" : " -translate-x-full xl:translate-x-0") + " transition-transform duration-200 ease-in-out"}
     >
         <button
             aria-label="Toggle Sidenav"
-            className={"absolute top-5 -right-3 p-2 rounded-xl bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 shadow-md transition-colors duration-200 ease-in-out" + (open ? " translate-x-0" : " translate-x-full") + " lg:translate-x-0 lg:hidden"}
+            className={"absolute top-5 -right-3 p-2 rounded-xl bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 shadow-md transition-colors duration-200 ease-in-out" + (open ? " translate-x-0" : " translate-x-full") + " xl:translate-x-0 xl:hidden"}
             onClick={() => setOpen(!open)}>
             {open ? <ChevronLeftCircle className="w-4 h-4" /> : <ChevronRightCircle className="w-4 h-4" />}
         </button>

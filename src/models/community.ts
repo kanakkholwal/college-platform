@@ -18,7 +18,12 @@ export type CommunityPostTypeWithId = RawCommunityPostType & {
     _id: string,
     createdAt: Date,
     updatedAt: Date,
-    author: string,
+    author: string | {
+        _id: string,
+        name: string,
+        email: string,
+        rollNo: string,
+    },
     views: number,
     likes: string[],
     savedBy: string[]

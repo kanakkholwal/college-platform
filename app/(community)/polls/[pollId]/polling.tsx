@@ -7,11 +7,11 @@ import toast from "react-hot-toast";
 import { database } from "src/lib/firebase";
 
 import { PollType } from "src/models/poll";
-import { sessionUserType } from "src/types/session";
+import { sessionType } from "src/types/session";
 
 interface PollingProps {
     poll: PollType;
-    user: sessionUserType;
+    user: sessionType["user"];
     updateVotes: (voteData: PollType["votes"]) => Promise<PollType>
 }
 
@@ -111,7 +111,7 @@ export default function Polling({ poll, user, updateVotes }: PollingProps) {
     );
 }
 
-function notAllowed(voteData: PollType["votes"], multipleChoice: boolean, user: sessionUserType, option: string) {
+function notAllowed(voteData: PollType["votes"], multipleChoice: boolean, user: sessionType["user"], option: string) {
 
     switch (true) {
         case !multipleChoice:

@@ -1,9 +1,9 @@
 "use server";
-import { authOptions } from "app/api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth/next";
+
 import { revalidatePath } from "next/cache";
 import dbConnect from "src/lib/dbConnect";
 import RoomModel, { RoomTypeWithId } from "src/models/room";
+import { getSession } from "../auth";
 
 
 export async function getRooms(query: string, currentPage: number, filter: {
@@ -44,7 +44,7 @@ export async function getRooms(query: string, currentPage: number, filter: {
 
 }
 export async function updateStatus(roomNumber: string, status: "available" | "occupied")  : Promise<boolean> {
-    const session = await getServerSession(authOptions);
+    const session = await getSession();
     if (!session) {
         throw new Error("Only admins, faculty and CRs can update room status");
     }

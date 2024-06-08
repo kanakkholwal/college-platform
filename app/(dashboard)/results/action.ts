@@ -9,7 +9,6 @@ export async function getResults(query: string, currentPage: number, filter: {
     batch?: number,
 }) {
     await dbConnect();
-
     const resultsPerPage = 32;
     const skip = currentPage * resultsPerPage - resultsPerPage;
 
@@ -36,9 +35,7 @@ export async function getResults(query: string, currentPage: number, filter: {
     }
 
     const results = await ResultModel.find(filterQuery)
-        .sort({
-            "rank.college": "asc",
-        })
+        .sort({ "rank.college": "asc" })
         .skip(skip)
         .limit(resultsPerPage)
         .exec();
